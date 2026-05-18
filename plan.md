@@ -415,121 +415,175 @@ No admin moderation interface exists in MVP.
 
 # Development Stages
 
-# Stage 1 — Frontend Prototype
+# Stage 1 — Deployable Frontend Shell
 
 Goal:
-Build the interface using hardcoded data.
+Create a working SvelteKit application that is already deployed online, even before real backend functionality exists.
 
-Features:
+Why:
+The project depends on cloud services (Supabase + Netlify). Deploying early reduces integration risk and avoids discovering auth/environment issues late in development.
+
+Tasks:
+- scaffold SvelteKit project
+- install Tailwind CSS
+- create GitHub repository
+- connect repository to Netlify
+- configure automatic deployments
+- create base routes/layouts
+- create placeholder UI using hardcoded data
+
+Pages:
 - landing page
 - login/signup screens
-- dashboard layout
-- goal cards
-- evidence post cards
-- activity feed
+- dashboard shell
+- placeholder activity feed
+- placeholder goal cards
 
 Notes:
-This stage focuses on happy-path flows only.
-Minimal polish.
+This stage intentionally uses fake data.
+The objective is infrastructure confidence and UI scaffolding, not functionality.
 
 Success Criteria:
-- app runs locally
-- major screens exist
+- local development works
+- Netlify deployment works
+- every major page route exists
 - responsive layout works
+- production URL updates automatically on push
 
 Estimated Time:
 ~2 hours
 
 ---
 
-# Stage 2 — Backend + Database
+# Stage 2 — Supabase Foundation
 
 Goal:
-Replace hardcoded data with real persistent data.
+Establish the real backend infrastructure and authentication layer.
 
 Tasks:
 - create Supabase project
-- configure auth
+- configure environment variables
+- configure local + production redirect URLs
+- install Supabase client libraries
+- configure auth/session handling
 - create database schema
-- configure RLS policies
-- connect frontend to database
-- CRUD operations for goals/posts
+- enable RLS on all tables
+- create initial RLS policies
+- connect deployed frontend to Supabase
+
+Technical Notes:
+- Use Supabase Auth as source of truth for identity
+- Use `@supabase/ssr` recommended SvelteKit integration pattern
+- Verify auth behavior in BOTH localhost and deployed production environment
+
+Important:
+Do not continue until authentication works reliably in production.
 
 Success Criteria:
-- users can sign up/sign in
-- goals persist
-- posts persist
-- feed loads real data
+- users can sign up
+- users can sign in
+- auth persists after refresh
+- production deployment communicates with Supabase correctly
+- protected routes work
+- database tables exist
+- RLS policies are active
 
 Estimated Time:
 ~3 hours
 
 ---
 
-# Stage 3 — Deployment
+# Stage 3 — Core Vertical Slice
 
 Goal:
-Deploy a working online version.
+Implement the complete core product loop end-to-end using real data.
+
+Core Loop:
+create goal → create evidence post → see post in feed
 
 Tasks:
-- push repo to GitHub
-- configure Netlify deployment
-- add environment variables
-- configure Supabase redirect URLs
-- test production build
+- create goals table integration
+- create evidence posts integration
+- create dashboard data loading
+- create public chronological feed
+- create protected create flows
+- connect forms to database
+- implement CRUD operations
+- validate ownership/security rules
 
-Technical Notes:
-- Use `@supabase/ssr` recommended pattern
-- Configure local + production redirect URLs correctly
+Notes:
+This is the first fully functional version of Goalers.
+
+Priority:
+Functionality over polish.
 
 Success Criteria:
-- public URL works
-- authentication works in production
-- database works in production
+- authenticated users can create goals
+- authenticated users can create evidence posts
+- evidence posts persist in database
+- feed loads real data
+- users only modify their own records
+- RLS prevents unauthorized writes
 
 Estimated Time:
-~1 hour
+~3 hours
 
 ---
 
-# Stage 4 — Social Interactions
+# Stage 4 — Social Reinforcement Loop
 
 Goal:
-Add the lightweight social feedback loop.
+Add lightweight social interaction systems that create accountability and emotional reinforcement.
 
 Tasks:
-- cheer toggling
-- feed interaction states
-- evidence flagging
-- onboarding polish
+- implement cheer toggling
+- implement cheer counts
+- implement evidence flagging
+- add interaction states/loading states
+- improve onboarding clarity
+- test second-account interactions
+
+Notes:
+This stage transforms the product from a CRUD app into a social accountability experience.
 
 Success Criteria:
-- users can react to posts
+- users can cheer posts
+- users can remove cheers
+- duplicate cheers are prevented
 - users can flag posts
-- social reinforcement loop exists
+- duplicate flags are prevented
+- second-account demo flow works correctly
 
 Estimated Time:
 ~2 hours
 
 ---
 
-# Stage 5 — Polish
+# Stage 5 — Polish + Demo Readiness
 
 Goal:
-Improve quality and presentation.
+Improve quality, presentation, and reliability for final presentation/demo.
 
 Tasks:
 - typography pass
-- spacing/layout improvements
+- spacing/layout refinement
 - responsive polish
-- hover states
+- hover/focus states
 - loading states
 - empty states
+- bug fixes
+- cleanup inconsistent UI
+- improve perceived product quality
+
+Priority:
+The app should feel intentional and coherent, even if feature scope remains small.
 
 Success Criteria:
-- feels intentional
-- portfolio-ready
-- easy to demo
+- portfolio/demo ready
+- easy to understand quickly
+- visually coherent
+- stable during presentation
+- core flows feel smooth
 
 Estimated Time:
 ~2 hours
@@ -538,13 +592,14 @@ Estimated Time:
 
 # Total Estimated Time
 
-Approximately 10 hours total.
+Approximately 12 hours total.
 
 This estimate assumes:
 - heavy use of Cursor/LLMs
-- leveraging patterns already learned in class
-- intentionally constrained MVP scope
-- focusing on happy-path implementation over edge cases
+- aggressive scope control
+- reuse of known patterns
+- prioritizing happy-path implementation
+- minimal custom backend complexity
 
 ---
 
@@ -553,36 +608,87 @@ This estimate assumes:
 ## By Session 10 (Work In Progress)
 
 Target:
-- working frontend
-- database connected
+- deployed app exists
+- Supabase connected
 - auth working
-- one end-to-end flow complete:
+- one complete vertical slice working:
   create goal → create post → see in feed
 
 Stretch Goal:
-- deployed version live
+- cheers working
 
 ---
 
 ## By Session 12 (Presentation)
 
 Target:
-- all MVP features working
-- public deployed URL
+- all MVP features functional
+- deployed production URL stable
 - responsive UI polished
-- ready for demo walkthrough
+- second-account social demo working
+- presentation/demo ready
 
 ---
 
-# Demo Script
+# Initial Build Order
 
-1. Create account
-2. Create a goal
-3. Post evidence toward the goal
-4. View evidence in public feed
-5. Log in with second account
-6. Cheer the evidence post
-7. Return to first account and see reinforcement
+## Infrastructure First
+
+1. Scaffold SvelteKit project
+2. Install Tailwind CSS
+3. Push repo to GitHub
+4. Deploy immediately to Netlify
+5. Verify production deploy pipeline
+
+---
+
+## UI Shell
+
+6. Build landing page
+7. Build auth screens
+8. Build dashboard layout
+9. Build hardcoded goal cards
+10. Build hardcoded feed UI
+
+---
+
+## Backend Foundation
+
+11. Create Supabase project
+12. Configure environment variables
+13. Configure auth redirect URLs
+14. Install/configure Supabase client
+15. Add authentication
+16. Create database schema
+17. Enable RLS policies
+
+---
+
+## Core Product Loop
+
+18. Create goals in database
+19. Create evidence posts in database
+20. Load real feed data
+21. Protect authenticated routes
+22. Validate ownership/security constraints
+
+---
+
+## Social Features
+
+23. Add cheers
+24. Add cheer toggling
+25. Add post flagging
+
+---
+
+## Polish
+
+26. Improve loading states
+27. Improve empty states
+28. Responsive polish
+29. Final visual cleanup
+30. Demo preparation/testing
 
 ---
 
