@@ -2,8 +2,9 @@
 	import { page } from '$app/state';
 	import AppNav from '$lib/components/AppNav.svelte';
 	import EvidenceFab from '$lib/components/EvidenceFab.svelte';
+	import type { LayoutData } from './$types';
 
-	let { children } = $props();
+	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
 
 	const pathname = $derived(page.url.pathname);
 	const isEvidenceSheet = $derived(pathname === '/evidence/new');
@@ -11,7 +12,11 @@
 </script>
 
 <div class="app-shell" class:sheet-open={isEvidenceSheet}>
-	<AppNav hideMobileNav={isEvidenceSheet} />
+	<AppNav
+		hideMobileNav={isEvidenceSheet}
+		displayName={data.user.name}
+		username={data.profile?.username ?? null}
+	/>
 	<main
 		class="app-main"
 		class:container={!isEvidenceSheet}

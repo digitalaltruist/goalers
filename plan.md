@@ -79,9 +79,13 @@ The inspiration comes from:
 
 ## Backend / Database
 
-- Supabase
-  - Auth
-  - PostgreSQL database
+- Neon (PostgreSQL)
+- Drizzle ORM (schema + migrations)
+- Better Auth (email/password sessions)
+
+All database access runs through SvelteKit server code (loads, form actions). The browser never receives database credentials.
+
+**Stack decision:** The project was scaffolded with `sv create` using Neon + Better Auth + Drizzle. This plan matches that stack (not Supabase).
 
 ## Deployment
 
@@ -106,10 +110,10 @@ Accessible without login:
 
 Require authentication:
 
-- dashboard
+- My Goals (`/my-goals`)
 - create goal flow
 - create evidence flow
-- activity feed
+- All Goals feed (`/all-goals`)
 - cheering
 - flagging
 
@@ -155,7 +159,7 @@ Example values:
 - `code`
 - `healthy_meal`
 
-This keeps posting lightweight, avoids Supabase Storage complexity, and makes the feed feel more designed.
+This keeps posting lightweight, avoids file/object storage complexity, and makes the feed feel more designed.
 
 Tradeoff:
 This is less useful as photographic proof, but it lowers friction and teaches users what kinds of evidence are expected.
@@ -196,10 +200,10 @@ This is enough to acknowledge the abuse vector without overbuilding moderation s
 
 The MVP protects against:
 
-- unauthorized database writes through RLS
+- unauthorized writes through missing server-side ownership checks
 - users modifying other users' content
 - duplicate cheers
-- forged authenticated requests through Supabase auth
+- forged or bypassed session checks on protected server actions
 
 The MVP does NOT protect against:
 
@@ -249,9 +253,9 @@ The capstone version will remain intentionally small and focused.
 
 # Core Data Models
 
-## auth.users
+## user
 
-Managed directly by Supabase Auth.
+Managed by Better Auth via the Drizzle adapter (tables in `src/lib/server/db/auth.schema.ts`: `user`, `session`, `account`, etc.).
 
 Stores:
 
@@ -259,9 +263,7 @@ Stores:
 - email
 - password credentials
 
-The MVP will use Supabase Auth as the source of truth for email addresses.
-
-Emails will NOT be duplicated in `profiles` to avoid synchronization drift.
+Email is the source of truth on the `user` table. Emails will NOT be duplicated in `profiles` to avoid synchronization drift.
 
 ---
 
@@ -279,12 +281,12 @@ Rules:
 
 - `profiles.id` is both:
   - primary key
-  - foreign key referencing `auth.users.id`
+  - foreign key referencing `user.id` (Better Auth)
 - username must be unique
-- username is selected during onboarding after signup
+- username is set at signup
 - usernames are publicly visible
 
-Profile rows are automatically created after signup.
+Profile rows are created after signup (insert in the sign-up server action).
 
 ---
 
@@ -371,13 +373,13 @@ Notes:
 
 ---
 
-# Row Level Security (RLS)
+# Authorization Rules (Server-Side)
 
-Supabase Row Level Security will be enabled on all tables.
+All rules are enforced in SvelteKit server loads and form actions using `event.locals.user` from Better Auth (`hooks.server.ts`). Every query and mutation must scope by the authenticated user id. Postgres RLS is not used in the MVP.
 
 ---
 
-## profiles policies
+## profiles
 
 ### Read
 
@@ -385,12 +387,11 @@ Authenticated users can read all profiles.
 
 ### Insert/Update
 
-Users can only create/update their own profile where:
-`profiles.id = auth.uid()`
+Users can only create/update their own profile where `profiles.id` matches the session user id.
 
 ---
 
-## goals policies
+## goals
 
 ### Read
 
@@ -398,16 +399,15 @@ Authenticated users can read all goals.
 
 ### Create
 
-Users can only create goals where:
-`goals.user_id = auth.uid()`
+Users can only create goals where `goals.user_id` matches the session user id.
 
 ### Update/Delete
 
-Users can only modify their own goals.
+Users can only modify their own goals (verify `goals.user_id` before update/delete).
 
 ---
 
-## evidence_posts policies
+## evidence_posts
 
 ### Read
 
@@ -417,8 +417,8 @@ Authenticated users can read all evidence posts.
 
 Users can only create evidence posts where:
 
-- `evidence_posts.user_id = auth.uid()`
-- referenced `goal_id` belongs to the authenticated user
+- `evidence_posts.user_id` matches the session user id
+- the referenced `goal_id` belongs to that same user
 
 This prevents users from attaching evidence to another user's goals.
 
@@ -428,7 +428,7 @@ Users can only modify their own evidence posts.
 
 ---
 
-## cheers policies
+## cheers
 
 ### Read
 
@@ -436,19 +436,17 @@ Authenticated users can read all cheers.
 
 ### Create/Delete
 
-Users can only create/remove cheers where:
-`cheers.user_id = auth.uid()`
+Users can only create/remove cheers where `cheers.user_id` matches the session user id.
 
 This prevents forged cheer ownership.
 
 ---
 
-## post_flags policies
+## post_flags
 
 ### Create
 
-Users can only create flags where:
-`post_flags.user_id = auth.uid()`
+Users can only create flags where `post_flags.user_id` matches the session user id.
 
 This prevents forged flag ownership.
 
@@ -468,7 +466,7 @@ Goal:
 Create a working SvelteKit application that is already deployed online, even before real backend functionality exists.
 
 Why:
-The project depends on cloud services (Supabase + Netlify). Deploying early reduces integration risk and avoids discovering auth/environment issues late in development.
+The project depends on cloud services (Neon + Netlify). Deploying early reduces integration risk and avoids discovering auth/environment issues late in development.
 
 Tasks:
 
@@ -504,27 +502,26 @@ Estimated Time:
 
 ---
 
-# Stage 2 — Supabase Foundation
+# Stage 2 — Database & Auth Foundation
 
 Goal:
 Establish the real backend infrastructure and authentication layer.
 
 Tasks:
 
-- create Supabase project
-- configure environment variables
-- configure local + production redirect URLs
-- install Supabase client libraries
-- configure auth/session handling
-- create database schema
-- enable RLS on all tables
-- create initial RLS policies
-- connect deployed frontend to Supabase
+- configure environment variables (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `ORIGIN`) locally and on Netlify
+- define app tables in Drizzle schema (`src/lib/server/db/schema.ts`)
+- run `db:generate` / `db:push` to Neon
+- wire Better Auth on `/login` and `/signup` (pattern from `src/routes/demo/better-auth/login/+page.server.ts`)
+- add `(app)/+layout.server.ts` route guards
+- implement logout in app nav
+- remove demo bypass links on auth pages
+- verify auth on localhost and production Netlify deploy
 
 Technical Notes:
 
-- Use Supabase Auth as source of truth for identity
-- Use `@supabase/ssr` recommended SvelteKit integration pattern
+- Better Auth + `sveltekitCookies` plugin (already in `src/lib/server/auth.ts`)
+- Session via `event.locals.user` / `event.locals.session`
 - Verify auth behavior in BOTH localhost and deployed production environment
 
 Important:
@@ -535,10 +532,10 @@ Success Criteria:
 - users can sign up
 - users can sign in
 - auth persists after refresh
-- production deployment communicates with Supabase correctly
-- protected routes work
-- database tables exist
-- RLS policies are active
+- production deploy has correct env vars and auth works
+- protected `(app)` routes redirect unauthenticated users
+- app tables exist in Neon
+- authorization rules documented and ready for Stage 3 enforcement in server code
 
 Estimated Time:
 ~3 hours
@@ -557,7 +554,7 @@ Tasks:
 
 - create goals table integration
 - create evidence posts integration
-- create dashboard data loading
+- create My Goals data loading
 - create public chronological feed
 - create protected create flows
 - connect forms to database
@@ -577,7 +574,7 @@ Success Criteria:
 - evidence posts persist in database
 - feed loads real data
 - users only modify their own records
-- RLS prevents unauthorized writes
+- server-side ownership checks prevent unauthorized writes
 
 Estimated Time:
 ~3 hours
@@ -669,7 +666,7 @@ This estimate assumes:
 Target:
 
 - deployed app exists
-- Supabase connected
+- Neon + auth connected
 - auth working
 - one complete vertical slice working:
 create goal → create post → see in feed
@@ -707,7 +704,7 @@ Target:
 
 1. Build landing page
 2. Build auth screens
-3. Build dashboard layout
+3. Build My Goals layout
 4. Build hardcoded goal cards
 5. Build hardcoded feed UI
 
@@ -715,13 +712,12 @@ Target:
 
 ## Backend Foundation
 
-1. Create Supabase project
-2. Configure environment variables
-3. Configure auth redirect URLs
-4. Install/configure Supabase client
-5. Add authentication
-6. Create database schema
-7. Enable RLS policies
+1. Configure Neon `DATABASE_URL` and Better Auth env vars
+2. Define Drizzle schema for app tables
+3. Push schema to Neon
+4. Wire Better Auth on login/signup
+5. Add protected route guards
+6. Enforce server-side authorization rules in CRUD (Stage 3)
 
 ---
 
@@ -801,7 +797,7 @@ Target:
 ## Security
 
 - Unauthenticated users cannot access protected routes
-- RLS policies block unauthorized writes
+- Server actions reject unauthorized writes (wrong user_id or foreign goal_id)
 - Users cannot modify another user's records directly through API calls
 
 ---
@@ -828,8 +824,9 @@ Risk:
 Auth/session bugs consuming too much time.
 
 Mitigation:
-Use Supabase Auth defaults.
-Avoid custom auth flows.
+Use Better Auth defaults already scaffolded.
+Copy patterns from demo routes.
+Avoid custom token logic.
 
 ---
 
@@ -868,9 +865,9 @@ Users should feel progress accumulating over time.
 
 1. Scaffold SvelteKit project
 2. Build landing page
-3. Build dashboard layout
+3. Build My Goals layout
 4. Create hardcoded goals/posts
-5. Add Supabase
+5. Add Neon + Better Auth
 6. Add auth
 7. Create goals in database
 8. Create evidence posts in database
