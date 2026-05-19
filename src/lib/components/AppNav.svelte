@@ -1,14 +1,17 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import AppLogo from './AppLogo.svelte';
-	import { CURRENT_USER, getInitials } from '$lib/data/mock';
+	import { getInitials } from '$lib/data/mock';
 
 	interface Props {
+		displayName: string;
+		username?: string | null;
 		hideMobileNav?: boolean;
 	}
 
-	let { hideMobileNav = false }: Props = $props();
+	let { displayName, username = null, hideMobileNav = false }: Props = $props();
 
 	const links = [
 		{ href: '/my-goals', label: 'My Goals' },
@@ -18,7 +21,7 @@
 	let menuOpen = $state(false);
 	let profileWrap = $state<HTMLDivElement | undefined>(undefined);
 
-	const initials = getInitials(CURRENT_USER.displayName);
+	const initials = $derived(getInitials(displayName));
 
 	function isActive(href: string): boolean {
 		return page.url.pathname === href || page.url.pathname.startsWith(href + '/');
@@ -70,7 +73,7 @@
 						</svg>
 					</span>
 					<span class="avatar" aria-hidden="true">{initials}</span>
-					<span class="user-name">{CURRENT_USER.displayName}</span>
+					<span class="user-name">{displayName}</span>
 				</button>
 				{#if menuOpen}
 					<div
@@ -79,7 +82,13 @@
 						role="menu"
 						aria-labelledby="profile-menu-button"
 					>
-						<a href={resolve('/login')} role="menuitem" class="menu-item" onclick={closeMenu}>Log out</a>
+						<form method="post" action="/logout" use:enhance>
+							<input type="hidden" name="intent" value="signout" />
+							<button type="submit" role="menuitem" class="menu-item">Log out</button>
+						</form>
+						{#if username}
+							<p class="menu-username">@{username}</p>
+						{/if}
 					</div>
 				{/if}
 			</div>
@@ -213,19 +222,35 @@
 		z-index: 20;
 	}
 
+	.profile-menu form {
+		margin: 0;
+	}
+
 	.menu-item {
 		display: block;
+		width: 100%;
 		padding: 0.5rem 0.75rem;
 		font-size: 0.9375rem;
 		font-weight: 500;
 		color: var(--color-text);
 		border-radius: var(--radius-sm);
 		text-decoration: none;
+		background: none;
+		border: none;
+		cursor: pointer;
+		font-family: inherit;
+		text-align: left;
 	}
 
 	.menu-item:hover {
 		background: var(--color-surface-muted);
-		text-decoration: none;
+	}
+
+	.menu-username {
+		margin: 0;
+		padding: 0.25rem 0.75rem 0.375rem;
+		font-size: 0.75rem;
+		color: var(--color-text-muted);
 	}
 
 	.mobile-nav {

@@ -1,5 +1,11 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import type { ActionData } from './$types';
+
+	let { form }: { form: ActionData } = $props();
+
+	const USERNAME_PATTERN = '[a-z0-9_]{3,30}';
 </script>
 
 <svelte:head>
@@ -11,18 +17,34 @@
 		<h1>Create your account</h1>
 		<p class="subtitle">Join Goalers and start building accountability in public.</p>
 
-		<form class="auth-form" onsubmit={(e) => e.preventDefault()}>
+		<form class="auth-form" method="post" action="?/signUpEmail" use:enhance>
 			<div class="form-field">
 				<label for="name">Display name</label>
-				<input id="name" type="text" name="name" placeholder="Alex Rivera" autocomplete="name" />
+				<input id="name" type="text" name="name" placeholder="Alex Rivera" autocomplete="name" required />
 			</div>
 			<div class="form-field">
 				<label for="username">Username</label>
-				<input id="username" type="text" name="username" placeholder="alex" autocomplete="username" />
+				<input
+					id="username"
+					type="text"
+					name="username"
+					placeholder="alex"
+					autocomplete="username"
+					pattern={USERNAME_PATTERN}
+					title="3–30 characters: lowercase letters, numbers, underscores"
+					required
+				/>
 			</div>
 			<div class="form-field">
 				<label for="email">Email</label>
-				<input id="email" type="email" name="email" placeholder="you@example.com" autocomplete="email" />
+				<input
+					id="email"
+					type="email"
+					name="email"
+					placeholder="you@example.com"
+					autocomplete="email"
+					required
+				/>
 			</div>
 			<div class="form-field">
 				<label for="password">Password</label>
@@ -32,17 +54,15 @@
 					name="password"
 					placeholder="••••••••"
 					autocomplete="new-password"
+					minlength="8"
+					required
 				/>
 			</div>
-			<button type="submit" class="btn btn-primary full-width" disabled title="Auth connects in Stage 2">
-				Create account
-			</button>
+			{#if form?.message}
+				<p class="form-error" role="alert">{form.message}</p>
+			{/if}
+			<button type="submit" class="btn btn-primary full-width">Create account</button>
 		</form>
-
-		<p class="placeholder-note">
-			Authentication is not wired yet. Use My Goals in the demo to explore the UI shell.
-		</p>
-		<a class="btn btn-secondary full-width" href={resolve('/my-goals')}>Continue to My Goals (demo)</a>
 
 		<p class="footer-link">
 			Already have an account? <a href={resolve('/login')}>Log in</a>
@@ -85,16 +105,11 @@
 		width: 100%;
 	}
 
-	.placeholder-note {
-		margin-top: 1rem;
-		font-size: 0.8125rem;
-		color: var(--color-text-muted);
-		text-align: center;
+	.form-error {
+		margin: 0;
+		font-size: 0.875rem;
+		color: var(--color-danger, #b42318);
 		line-height: 1.45;
-	}
-
-	.auth-card > .btn-secondary {
-		margin-top: 0.75rem;
 	}
 
 	.footer-link {
