@@ -1,24 +1,27 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { ActionData } from './$types';
+
+	let { form }: { form: ActionData } = $props();
 </script>
 
 <svelte:head>
 	<title>New goal — Goalers</title>
 </svelte:head>
 
-<div class="placeholder-banner" role="status">
-	Placeholder create-goal flow — form UI only. Database integration comes in Stage 3.
-</div>
-
 <header class="page-header">
 	<h1>Create a goal</h1>
 	<p>Commit to something publicly and invite accountability.</p>
 </header>
 
-<form class="create-form card" onsubmit={(e) => e.preventDefault()}>
+{#if form?.message}
+	<p class="form-error" role="alert">{form.message}</p>
+{/if}
+
+<form class="create-form card" method="POST">
 	<div class="form-field">
 		<label for="title">Goal title</label>
-		<input id="title" type="text" name="title" placeholder="Ship capstone MVP" />
+		<input id="title" type="text" name="title" placeholder="Ship capstone MVP" required />
 	</div>
 	<div class="form-field">
 		<label for="description">Description</label>
@@ -31,7 +34,7 @@
 	</div>
 	<div class="actions">
 		<a class="btn btn-secondary" href={resolve('/my-goals')}>Cancel</a>
-		<button type="submit" class="btn btn-primary" disabled title="Saves in Stage 3">Create goal</button>
+		<button type="submit" class="btn btn-primary">Create goal</button>
 	</div>
 </form>
 
@@ -55,5 +58,12 @@
 		gap: 0.75rem;
 		justify-content: flex-end;
 		padding-top: 0.5rem;
+	}
+
+	.form-error {
+		color: var(--color-danger, #b91c1c);
+		font-size: 0.875rem;
+		font-weight: 600;
+		margin-bottom: 1rem;
 	}
 </style>

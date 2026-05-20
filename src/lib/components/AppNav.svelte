@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import AppLogo from './AppLogo.svelte';
-	import { getInitials } from '$lib/data/mock';
+	import { getInitials } from '$lib/format';
 
 	interface Props {
 		displayName: string;

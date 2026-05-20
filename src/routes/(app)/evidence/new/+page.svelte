@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { MOCK_GOALS, VISUAL_STAMPS } from '$lib/data/mock';
+	import { VISUAL_STAMPS } from '$lib/stamps';
+	import type { ActionData, PageData } from './$types';
+
+	let { data, form }: { data: PageData; form: ActionData } = $props();
+
+	const hasGoals = $derived(data.goals.length > 0);
 </script>
 
 <svelte:head>
@@ -17,62 +22,65 @@
 	<div class="sheet-scroll">
 		<p class="sheet-subtitle">Share proof of progress toward one of your goals.</p>
 
-		<p class="placeholder-banner sheet-banner" role="status">
-			Placeholder — saves connect in Stage 3.
-		</p>
-
-		<form id="evidence-form" class="create-form" onsubmit={(e) => e.preventDefault()}>
-			<div class="form-field">
-				<label for="goal">Goal</label>
-				<select id="goal" name="goal">
-					{#each MOCK_GOALS as goal}
-						<option value={goal.id}>{goal.title}</option>
-					{/each}
-				</select>
+		{#if !hasGoals}
+			<div class="empty-state card">
+				<p>Create a goal before you can post evidence.</p>
+				<a class="btn btn-primary" href={resolve('/goals/new')}>Create a goal</a>
 			</div>
+		{:else}
+			{#if form?.message}
+				<p class="form-error sheet-banner" role="alert">{form.message}</p>
+			{/if}
 
-			<fieldset class="stamp-fieldset">
-				<legend>Visual stamp</legend>
-				<div class="stamp-grid">
-					{#each VISUAL_STAMPS as stamp}
-						<label class="stamp-option">
-							<input
-								type="radio"
-								name="visual_stamp"
-								value={stamp.slug}
-								checked={stamp.slug === 'study'}
-							/>
-							<span class="stamp-preview">{stamp.emoji}</span>
-							<span class="stamp-label">{stamp.label}</span>
-						</label>
-					{/each}
+			<form id="evidence-form" class="create-form" method="POST">
+				<div class="form-field">
+					<label for="goal">Goal</label>
+					<select id="goal" name="goal" required>
+						{#each data.goals as goal (goal.id)}
+							<option value={goal.id}>{goal.title}</option>
+						{/each}
+					</select>
 				</div>
-			</fieldset>
 
-			<div class="form-field">
-				<label for="content">What did you do?</label>
-				<textarea
-					id="content"
-					name="content"
-					rows="4"
-					placeholder="Describe your progress..."
-				></textarea>
-			</div>
-		</form>
+				<fieldset class="stamp-fieldset">
+					<legend>Visual stamp</legend>
+					<div class="stamp-grid">
+						{#each VISUAL_STAMPS as stamp}
+							<label class="stamp-option">
+								<input
+									type="radio"
+									name="visual_stamp"
+									value={stamp.slug}
+									checked={stamp.slug === 'study'}
+									required
+								/>
+								<span class="stamp-preview">{stamp.emoji}</span>
+								<span class="stamp-label">{stamp.label}</span>
+							</label>
+						{/each}
+					</div>
+				</fieldset>
+
+				<div class="form-field">
+					<label for="content">What did you do?</label>
+					<textarea
+						id="content"
+						name="content"
+						rows="4"
+						placeholder="Describe your progress..."
+						required
+					></textarea>
+				</div>
+			</form>
+		{/if}
 	</div>
 
-	<footer class="sheet-footer sheet-actions">
-		<a class="btn btn-secondary" href={resolve('/my-goals')}>Cancel</a>
-		<button
-			type="submit"
-			form="evidence-form"
-			class="btn btn-primary"
-			disabled
-			title="Saves in Stage 3"
-		>
-			Post evidence
-		</button>
-	</footer>
+	{#if hasGoals}
+		<footer class="sheet-footer sheet-actions">
+			<a class="btn btn-secondary" href={resolve('/my-goals')}>Cancel</a>
+			<button type="submit" form="evidence-form" class="btn btn-primary">Post evidence</button>
+		</footer>
+	{/if}
 </div>
 
 <style>
@@ -207,6 +215,25 @@
 		background: var(--color-surface);
 	}
 
+	.empty-state {
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		max-width: 28rem;
+	}
+
+	.empty-state p {
+		color: var(--color-text-muted);
+		line-height: 1.5;
+	}
+
+	.form-error {
+		color: var(--color-danger, #b91c1c);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
 	@media (max-width: 767px) {
 		.evidence-sheet {
 			position: fixed;
@@ -233,10 +260,6 @@
 
 		.sheet-header {
 			padding-inline: 0;
-		}
-
-		.sheet-banner {
-			display: none;
 		}
 
 		.stamp-grid {

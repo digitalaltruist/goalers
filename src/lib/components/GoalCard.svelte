@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { MockGoal } from '$lib/data/mock';
+	import type { GoalSummary } from '$lib/types';
 
 	interface Props {
-		goal: MockGoal;
+		goal: GoalSummary;
 	}
 
 	let { goal }: Props = $props();

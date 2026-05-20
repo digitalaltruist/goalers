@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type { VisualStamp } from '$lib/data/mock';
-	import { stampEmoji } from '$lib/data/mock';
+	import { stampEmoji, type VisualStamp } from '$lib/stamps';
 
 	interface Props {
 		stamp: VisualStamp;

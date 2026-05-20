@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { MockEvidencePost } from '$lib/data/mock';
-	import { formatRelativeTime } from '$lib/data/mock';
+	import { formatRelativeTime } from '$lib/format';
+	import type { FeedPost } from '$lib/types';
 	import VisualStamp from './VisualStamp.svelte';
 
 	interface Props {
-		post: MockEvidencePost;
+		post: FeedPost;
 	}
 
 	let { post }: Props = $props();

@@ -89,33 +89,7 @@ All database access runs through SvelteKit server code (loads, form actions). Th
 
 ## Deployment
 
-- Netlify (hosting + serverless functions for SvelteKit)
-
-## Media / File Storage
-
-- Netlify Blobs — evidence photo uploads (binary files)
-- `@netlify/blobs` in server-side upload handlers (form actions)
-- Neon stores metadata only (`photo_url`, `photo_key` on `evidence_posts`); image bytes are not stored in Postgres
-
-Upload flow (Stage 3.5):
-
-1. Authenticated user submits evidence form with image file + text + goal
-2. Server action validates session, ownership, file type/size
-3. Server writes file to Netlify Blobs, gets public URL
-4. Server inserts `evidence_posts` row with URL and blob key
-
-Environment variables (local + Netlify):
-
-- Existing: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `ORIGIN`
-- Stage 3.5: Netlify Blobs credentials (provided automatically on Netlify deploy when Blobs are enabled for the site; use Netlify CLI / dashboard for local dev — see [Netlify Blobs docs](https://docs.netlify.com/blobs/overview/))
-
-Limits (MVP):
-
-- Server-mediated upload through SvelteKit form action (keep implementation simple)
-- Max file size ~5 MB; allow JPEG, PNG, WebP only
-- One photo per evidence post (required after Stage 3.5)
-
-Billing: Netlify Blobs usage may incur cost on your Netlify account; acceptable for capstone.
+- Netlify
 
 ## Optional Services
 
@@ -167,21 +141,28 @@ This keeps the MVP simple and avoids needing networks, groups, or discovery logi
 
 ## Evidence Format
 
-Evidence posts are lightweight “proof of action” updates tied to a goal. Each post includes:
+The MVP will not support image uploads.
 
-- short text (`content`) describing what the user did
-- one **photo** uploaded by the user (stored in Netlify Blobs)
-- a public URL (`photo_url`) and blob key (`photo_key`) stored in Neon for feed display and optional cleanup on delete
+Instead, users choose from a small set of curated evidence visuals, such as:
 
-Photos are the primary visual proof in the feed (replacing the earlier stamp-picker concept from the UI shell).
+- stamps
+- emoji clusters
+- lightweight illustrations/icons
 
-Implementation is split across stages:
+The selected value is stored as a string slug in `visual_stamp`.
 
-- **Stage 3:** text + goal link persist in the database; feed and create flows work end-to-end without photos yet (or with a nullable `photo_url` until 3.5 ships)
-- **Stage 3.5:** photo upload via Netlify Blobs; create flow requires an image; feed cards render photos
+Example values:
+
+- `book`
+- `workout`
+- `study`
+- `code`
+- `healthy_meal`
+
+This keeps posting lightweight, avoids file/object storage complexity, and makes the feed feel more designed.
 
 Tradeoff:
-Uploads add object-storage and validation work, but photographic proof matches the product story (BeReal-style accountability) better than curated emoji stamps.
+This is less useful as photographic proof, but it lowers friction and teaches users what kinds of evidence are expected.
 
 ---
 
@@ -204,14 +185,14 @@ Because all posts are public to logged-in users, spam is technically possible.
 
 For the capstone MVP:
 
-- users can flag evidence posts (text and images)
+- users can flag evidence posts
 - flags are stored in the database
 - no moderation workflow is built yet
-- no automated spam detection or image content scanning exists
+- no automated spam detection exists
 
 Flags are effectively invisible operationally in MVP because no admin tooling exists yet.
 
-This is enough to acknowledge the abuse vector (including inappropriate images) without overbuilding moderation systems. Photo uploads make flagging more meaningful in Stage 4.
+This is enough to acknowledge the abuse vector without overbuilding moderation systems.
 
 ---
 
@@ -223,18 +204,15 @@ The MVP protects against:
 - users modifying other users' content
 - duplicate cheers
 - forged or bypassed session checks on protected server actions
-- unauthenticated or cross-user evidence uploads (server actions only; session required)
-- obviously invalid uploads (wrong MIME type, over size limit) rejected server-side
 
 The MVP does NOT protect against:
 
 - spam accounts
 - coordinated abuse
-- offensive text or image content
-- fake accountability claims (staged photos)
+- offensive text content
+- fake accountability claims
 - high-volume scraping
 - moderation backlog
-- storage cost abuse (no per-user upload quotas beyond file size cap)
 
 This is acceptable for a small-scale capstone demo.
 
@@ -248,16 +226,16 @@ The capstone version will remain intentionally small and focused.
 
 - user authentication
 - create goals
-- create evidence/progress posts **with photo upload** (Netlify Blobs)
-- chronological public feed (displays evidence photos)
+- create evidence/progress posts
+- chronological public feed
 - lightweight reactions/validation
 - basic evidence flagging
 
 ## Nice-to-Have
 
 - simple streak display
-- avatars/profile images (separate from evidence photos; still optional)
-- improved feed polish (image loading skeletons, lightbox)
+- avatars/profile images
+- improved feed polish
 
 ## Explicitly Out of Scope
 
@@ -267,9 +245,7 @@ The capstone version will remain intentionally small and focused.
 - leaderboards
 - advanced gamification
 - real-time systems
-- multiple images per evidence post
-- image editing/cropping tools
-- automated image moderation / NSFW detection
+- image uploads
 - follower systems
 - private goals
 
@@ -345,17 +321,13 @@ Fields:
 - user_id
 - goal_id
 - content
-- photo_url
-- photo_key
+- visual_stamp
 - created_at
 
 Notes:
 
-- `photo_url` — public URL served from Netlify Blobs (set in Stage 3.5)
-- `photo_key` — blob store key for delete/replace when user removes their post
-- `photo_url` / `photo_key` may be nullable during Stage 3 only; required once Stage 3.5 ships
+- `visual_stamp` stores predefined string slugs
 - all evidence posts are public to authenticated users
-- on delete: remove Neon row and delete blob by `photo_key` (best-effort in MVP)
 
 ---
 
@@ -447,13 +419,12 @@ Users can only create evidence posts where:
 
 - `evidence_posts.user_id` matches the session user id
 - the referenced `goal_id` belongs to that same user
-- (Stage 3.5) the uploaded photo is written to Netlify Blobs in a server action under the same session — never trust client-supplied `photo_url` / `photo_key` without server-side upload
 
-This prevents users from attaching evidence to another user's goals or pointing posts at blobs they do not own.
+This prevents users from attaching evidence to another user's goals.
 
 ### Update/Delete
 
-Users can only modify their own evidence posts. On delete (Stage 3.5), server should delete the associated Netlify Blob when `photo_key` is present.
+Users can only modify their own evidence posts.
 
 ---
 
@@ -574,7 +545,7 @@ Estimated Time:
 # Stage 3 — Core Vertical Slice
 
 Goal:
-Implement the complete core product loop end-to-end using real data (text evidence first; photos in Stage 3.5).
+Implement the complete core product loop end-to-end using real data.
 
 Core Loop:
 create goal → create evidence post → see post in feed
@@ -582,19 +553,16 @@ create goal → create evidence post → see post in feed
 Tasks:
 
 - create goals table integration
-- create evidence posts integration (`content`, `goal_id`; `photo_url` / `photo_key` nullable until 3.5)
+- create evidence posts integration
 - create My Goals data loading
 - create public chronological feed
-- create protected create flows (`/goals/new`, `/evidence/new`)
+- create protected create flows
 - connect forms to database
 - implement CRUD operations
 - validate ownership/security rules
-- remove placeholder banners and mock data from app routes
 
 Notes:
-This is the first fully functional version of Goalers. Do **not** block this stage on Netlify Blobs — ship the loop with text-only evidence if needed, then add required photos in Stage 3.5.
-
-The Stage 1 UI still has a visual-stamp picker; replace that flow in Stage 3.5 with a file input + preview.
+This is the first fully functional version of Goalers.
 
 Priority:
 Functionality over polish.
@@ -602,7 +570,7 @@ Functionality over polish.
 Success Criteria:
 
 - authenticated users can create goals
-- authenticated users can create evidence posts (text + goal)
+- authenticated users can create evidence posts
 - evidence posts persist in database
 - feed loads real data
 - users only modify their own records
@@ -610,45 +578,6 @@ Success Criteria:
 
 Estimated Time:
 ~3 hours
-
----
-
-# Stage 3.5 — Evidence Photo Upload (Netlify Blobs)
-
-Goal:
-Replace stamp-based evidence visuals with user-uploaded photos stored in Netlify Blobs, wired through SvelteKit server actions.
-
-Why:
-Photographic proof is core to the product story. Doing this after Stage 3 keeps the vertical slice unblocked while still landing photos before social features (cheers/flags on image posts).
-
-Tasks:
-
-- enable Netlify Blobs on the Netlify site (dashboard); verify local dev with Netlify CLI / env as needed
-- add `@netlify/blobs` dependency
-- extend Drizzle schema: `photo_url`, `photo_key` on `evidence_posts` (migrate off `visual_stamp` if still present in schema/UI)
-- implement upload in `/evidence/new` form action: validate MIME + size, write blob, store URL + key
-- update create evidence UI: file input, client preview, remove stamp picker
-- update feed (`FeedPost`) and any goal detail views to render `photo_url` (aspect ratio, alt text, broken-image fallback)
-- on evidence delete: delete blob by `photo_key` then delete DB row
-- verify upload works on **production** Netlify deploy (not only localhost)
-- update landing copy that still mentions “visual stamps”
-
-Technical Notes:
-
-- Upload runs server-side in form action after auth check (same pattern as other mutations)
-- Never accept raw `photo_url` from the client without the server having written the blob
-- Keep one image per post; required on create after this stage
-
-Success Criteria:
-
-- authenticated users must attach a photo when posting evidence
-- images persist in Netlify Blobs and display in the public feed
-- unauthorized users cannot upload or attach blobs to others' goals
-- deleting own evidence removes the blob (best-effort acceptable for MVP)
-- production deploy uploads successfully with Blobs enabled
-
-Estimated Time:
-~2 hours
 
 ---
 
@@ -667,7 +596,7 @@ Tasks:
 - test second-account interactions
 
 Notes:
-This stage transforms the product from a CRUD app into a social accountability experience. Run **after Stage 3.5** so cheers and flags apply to photo evidence posts.
+This stage transforms the product from a CRUD app into a social accountability experience.
 
 Success Criteria:
 
@@ -692,16 +621,13 @@ Tasks:
 
 - typography pass
 - spacing/layout refinement
-- responsive polish (including evidence photos in feed cards)
+- responsive polish
 - hover/focus states
-- loading states (including image load skeletons for feed photos)
+- loading states
 - empty states
 - bug fixes
 - cleanup inconsistent UI
 - improve perceived product quality
-
-Notes:
-Photo **upload pipeline** belongs in Stage 3.5, not here. This stage is presentation and reliability only.
 
 Priority:
 The app should feel intentional and coherent, even if feature scope remains small.
@@ -721,7 +647,7 @@ Estimated Time:
 
 # Total Estimated Time
 
-Approximately 14 hours total (includes Stage 3.5 photo upload).
+Approximately 12 hours total.
 
 This estimate assumes:
 
@@ -747,7 +673,6 @@ create goal → create post → see in feed
 
 Stretch Goal:
 
-- evidence photo upload working (Stage 3.5)
 - cheers working
 
 ---
@@ -756,9 +681,8 @@ Stretch Goal:
 
 Target:
 
-- all MVP features functional (including evidence photos via Netlify Blobs)
+- all MVP features functional
 - deployed production URL stable
-- photo uploads verified in production
 - responsive UI polished
 - second-account social demo working
 - presentation/demo ready
@@ -800,19 +724,10 @@ Target:
 ## Core Product Loop
 
 1. Create goals in database
-2. Create evidence posts in database (text + goal; Stage 3)
+2. Create evidence posts in database
 3. Load real feed data
 4. Protect authenticated routes
 5. Validate ownership/security constraints
-
----
-
-## Evidence Photos (Stage 3.5)
-
-1. Enable Netlify Blobs on site
-2. Add upload form action + `@netlify/blobs`
-3. Migrate schema/UI from stamps to `photo_url` / `photo_key`
-4. Render photos in feed; verify production uploads
 
 ---
 
@@ -854,12 +769,11 @@ Target:
 
 ## Evidence Posts
 
-- User A can create evidence post with photo + text
-- Photo displays in public feed (`photo_url` from Netlify Blobs)
-- Invalid file type or oversized file is rejected
+- User A can create evidence post
+- Post appears in public feed
+- Curated visual stamp displays correctly
 - User B cannot edit/delete User A's evidence post
 - User B cannot attach evidence to User A's goal ID
-- User A deleting their post removes the blob (best-effort)
 
 ---
 
@@ -916,19 +830,6 @@ Avoid custom token logic.
 
 ---
 
-## File Upload / Netlify Blobs
-
-Risk:
-Upload works locally but fails in production; blob env misconfigured; scope creep (cropping, multiple images).
-
-Mitigation:
-Complete Stage 3 text loop first, then Stage 3.5.
-Verify uploads on Netlify deploy before Stage 4.
-Enforce strict MIME/size limits server-side.
-One photo per post; no editor.
-
----
-
 ## Overbuilding Gamification
 
 Risk:
@@ -960,22 +861,21 @@ Users should feel progress accumulating over time.
 
 ---
 
-# Condensed Build Order
+# Initial Build Order
 
 1. Scaffold SvelteKit project
 2. Build landing page
 3. Build My Goals layout
-4. Create hardcoded goals/posts (UI shell; stamps are placeholders until 3.5)
+4. Create hardcoded goals/posts
 5. Add Neon + Better Auth
 6. Add auth
-7. Create goals in database (Stage 3)
-8. Create evidence posts in database — text + goal (Stage 3)
-9. Build chronological feed (Stage 3)
-10. Evidence photo upload via Netlify Blobs (Stage 3.5)
-11. Deploy; verify Blobs in production
-12. Add cheers (Stage 4)
-13. Add flagging (Stage 4)
-14. Polish UI (Stage 5)
+7. Create goals in database
+8. Create evidence posts in database
+9. Build chronological feed
+10. Deploy
+11. Add cheers
+12. Add flagging
+13. Polish UI
 
 ---
 
@@ -992,13 +892,12 @@ Users should feel progress accumulating over time.
 - Best structure for feed queries as scale increases?
 - Should future versions support real-time updates?
 - Should future versions add notifications/email reminders?
-- Should future versions use direct-to-blob browser uploads for larger files (bypass serverless body limits)?
 
 ## UX Questions
 
-- How do we make posting feel lightweight (photo + caption without friction)?
+- How do we make posting feel lightweight?
 - How do we avoid the app feeling performative or “cringe”?
-- What default crop/aspect ratio keeps the feed cohesive?
+- How do curated visuals shape posting behavior?
 
 ---
 
@@ -1007,8 +906,8 @@ Users should feel progress accumulating over time.
 The project succeeds if:
 
 - users can publicly commit to goals
-- users can post evidence of progress **with photos** others can see
-- other users can validate that progress (cheers)
+- users can post evidence of progress
+- other users can validate that progress
 - the app creates a feeling of accountability and momentum
 
 Even with minimal gamification systems.

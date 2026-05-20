@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import GoalCard from '$lib/components/GoalCard.svelte';
-	import { CURRENT_USER, MOCK_GOALS } from '$lib/data/mock';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+
+	const displayName = $derived(data.user.name);
 </script>
 
 <svelte:head>
 	<title>My Goals — Goalers</title>
 </svelte:head>
 
-<div class="placeholder-banner" role="status">
-	Stage 1 shell — goals below use hardcoded placeholder data. Real data connects in Stage 3.
-</div>
-
 <header class="page-header goals-header">
 	<div>
-		<h1>Hey, {CURRENT_USER.displayName}</h1>
+		<h1>Hey, {displayName}</h1>
 		<p>Your active goals and recent accountability commitments.</p>
 	</div>
 	<a class="btn btn-primary" href={resolve('/goals/new')}>New goal</a>
@@ -22,11 +22,18 @@
 
 <section class="goals-section" aria-labelledby="goals-heading">
 	<h2 id="goals-heading" class="section-title">Your goals</h2>
-	<div class="goals-grid">
-		{#each MOCK_GOALS as goal (goal.id)}
-			<GoalCard {goal} />
-		{/each}
-	</div>
+	{#if data.goals.length === 0}
+		<div class="empty-state card">
+			<p>No goals yet. Create your first commitment to start posting evidence.</p>
+			<a class="btn btn-primary" href={resolve('/goals/new')}>Create a goal</a>
+		</div>
+	{:else}
+		<div class="goals-grid">
+			{#each data.goals as goal (goal.id)}
+				<GoalCard {goal} />
+			{/each}
+		</div>
+	{/if}
 </section>
 
 <style>
@@ -50,6 +57,20 @@
 	.goals-grid {
 		display: grid;
 		gap: 1rem;
+	}
+
+	.empty-state {
+		padding: 2rem 1.5rem;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1rem;
+		max-width: 28rem;
+	}
+
+	.empty-state p {
+		color: var(--color-text-muted);
+		line-height: 1.5;
 	}
 
 	@media (min-width: 640px) {
