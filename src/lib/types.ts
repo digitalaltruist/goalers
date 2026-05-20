@@ -1,5 +1,3 @@
-import type { VisualStamp } from '$lib/stamps';
-
 export interface GoalSummary {
 	id: string;
 	title: string;
@@ -16,7 +14,7 @@ export interface FeedPost {
 	authorUsername: string;
 	authorDisplayName: string;
 	content: string;
-	visualStamp: VisualStamp;
+	photoUrl: string;
 	createdAt: string;
 	cheerCount: number;
 	cheeredByMe: boolean;

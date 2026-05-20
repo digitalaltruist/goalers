@@ -1,11 +1,24 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { VISUAL_STAMPS } from '$lib/stamps';
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
 	const hasGoals = $derived(data.goals.length > 0);
+
+	let previewUrl = $state<string | null>(null);
+
+	function onPhotoChange(event: Event) {
+		const input = event.currentTarget as HTMLInputElement;
+		const file = input.files?.[0];
+		if (previewUrl) {
+			URL.revokeObjectURL(previewUrl);
+			previewUrl = null;
+		}
+		if (file) {
+			previewUrl = URL.createObjectURL(file);
+		}
+	}
 </script>
 
 <svelte:head>
@@ -20,7 +33,7 @@
 	</header>
 
 	<div class="sheet-scroll">
-		<p class="sheet-subtitle">Share proof of progress toward one of your goals.</p>
+		<p class="sheet-subtitle">Share photo proof of progress toward one of your goals.</p>
 
 		{#if !hasGoals}
 			<div class="empty-state card">
@@ -32,7 +45,12 @@
 				<p class="form-error sheet-banner" role="alert">{form.message}</p>
 			{/if}
 
-			<form id="evidence-form" class="create-form" method="POST">
+			<form
+				id="evidence-form"
+				class="create-form"
+				method="POST"
+				enctype="multipart/form-data"
+			>
 				<div class="form-field">
 					<label for="goal">Goal</label>
 					<select id="goal" name="goal" required>
@@ -42,24 +60,23 @@
 					</select>
 				</div>
 
-				<fieldset class="stamp-fieldset">
-					<legend>Visual stamp</legend>
-					<div class="stamp-grid">
-						{#each VISUAL_STAMPS as stamp}
-							<label class="stamp-option">
-								<input
-									type="radio"
-									name="visual_stamp"
-									value={stamp.slug}
-									checked={stamp.slug === 'study'}
-									required
-								/>
-								<span class="stamp-preview">{stamp.emoji}</span>
-								<span class="stamp-label">{stamp.label}</span>
-							</label>
-						{/each}
-					</div>
-				</fieldset>
+				<div class="form-field photo-field">
+					<label for="photo">Photo proof</label>
+					<input
+						id="photo"
+						name="photo"
+						type="file"
+						accept="image/jpeg,image/png,image/webp"
+						required
+						onchange={onPhotoChange}
+					/>
+					<span class="hint">JPEG, PNG, or WebP — max 5 MB</span>
+					{#if previewUrl}
+						<div class="photo-preview">
+							<img src={previewUrl} alt="" />
+						</div>
+					{/if}
+				</div>
 
 				<div class="form-field">
 					<label for="content">What did you do?</label>
@@ -150,58 +167,29 @@
 		min-width: 0;
 	}
 
-	.stamp-fieldset {
-		border: none;
-		padding: 0;
-		margin: 0;
-		min-width: 0;
-	}
-
-	.stamp-fieldset legend {
+	.photo-field input[type='file'] {
 		font-size: 0.875rem;
-		font-weight: 600;
-		margin-bottom: 0.5rem;
 	}
 
-	.stamp-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
-		gap: 0.5rem;
-	}
-
-	.stamp-option {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.25rem;
-		padding: 0.75rem 0.5rem;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-sm);
-		cursor: pointer;
-		background: var(--color-surface);
-		min-width: 0;
-	}
-
-	.stamp-option:has(input:checked) {
-		border-color: var(--color-primary);
-		background: var(--color-primary-soft);
-	}
-
-	.stamp-option input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	.stamp-preview {
-		font-size: 1.5rem;
-	}
-
-	.stamp-label {
-		font-size: 0.6875rem;
-		font-weight: 600;
+	.hint {
+		font-size: 0.8125rem;
 		color: var(--color-text-muted);
-		text-align: center;
+	}
+
+	.photo-preview {
+		margin-top: 0.75rem;
+		border-radius: var(--radius-sm);
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface-muted);
+		aspect-ratio: 4 / 3;
+	}
+
+	.photo-preview img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
 	}
 
 	.sheet-footer {
@@ -260,11 +248,6 @@
 
 		.sheet-header {
 			padding-inline: 0;
-		}
-
-		.stamp-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: 0.5rem;
 		}
 
 		.sheet-footer {

@@ -31,7 +31,7 @@
 		<article class="feature card">
 			<span class="feature-icon" aria-hidden="true">✨</span>
 			<h2>Proof of action</h2>
-			<p>Post quick evidence updates with curated visual stamps — fast, lightweight, designed.</p>
+			<p>Post photo proof of your progress — quick captures that keep you accountable.</p>
 		</article>
 		<article class="feature card">
 			<span class="feature-icon" aria-hidden="true">👏</span>

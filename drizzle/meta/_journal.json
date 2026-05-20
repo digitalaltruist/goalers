@@ -15,6 +15,13 @@
       "when": 1779092000000,
       "tag": "0001_app_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779093000000,
+      "tag": "0002_evidence_photos",
+      "breakpoints": true
     }
   ]
 }

@@ -1,10 +1,10 @@
 import { and, desc, eq } from 'drizzle-orm';
-import type { VisualStamp } from '$lib/stamps';
 import type { FeedPost } from '$lib/types';
 import { db } from '$lib/server/db';
 import { evidencePosts, goals, profiles } from '$lib/server/db/schema';
 import { user } from '$lib/server/db/auth.schema';
 import { assertOwnsEvidencePost, AuthzError, requireSessionUser } from '$lib/server/authz';
+import { buildPhotoUrl, deleteEvidencePhoto, uploadEvidencePhoto } from '$lib/server/blobs';
 import { getGoalForUser } from '$lib/server/goals';
 
 export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> {
@@ -18,7 +18,7 @@ export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> 
 			authorUsername: profiles.username,
 			authorDisplayName: user.name,
 			content: evidencePosts.content,
-			visualStamp: evidencePosts.visualStamp,
+			photoUrl: evidencePosts.photoUrl,
 			createdAt: evidencePosts.createdAt
 		})
 		.from(evidencePosts)
@@ -34,7 +34,7 @@ export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> 
 		authorUsername: row.authorUsername,
 		authorDisplayName: row.authorDisplayName,
 		content: row.content,
-		visualStamp: row.visualStamp as VisualStamp,
+		photoUrl: row.photoUrl,
 		createdAt: row.createdAt.toISOString(),
 		cheerCount: 0,
 		cheeredByMe: false
@@ -43,7 +43,8 @@ export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> 
 
 export async function createEvidencePost(
 	sessionUserId: string,
-	input: { goalId: string; content: string; visualStamp: string }
+	origin: string,
+	input: { goalId: string; content: string; photo: File }
 ) {
 	requireSessionUser(sessionUserId);
 
@@ -52,13 +53,17 @@ export async function createEvidencePost(
 		throw new AuthzError('Goal not found or not owned by you');
 	}
 
+	const { photoKey } = await uploadEvidencePhoto(sessionUserId, input.photo);
+	const photoUrl = buildPhotoUrl(origin, photoKey);
+
 	const [post] = await db
 		.insert(evidencePosts)
 		.values({
 			userId: sessionUserId,
 			goalId: input.goalId,
-			content: input.content,
-			visualStamp: input.visualStamp
+			content: input.content.trim(),
+			photoUrl,
+			photoKey
 		})
 		.returning({ id: evidencePosts.id });
 
@@ -77,7 +82,7 @@ export async function getEvidencePostForUser(postId: string, userId: string) {
 export async function updateEvidencePost(
 	sessionUserId: string,
 	postId: string,
-	input: { content: string; visualStamp: string }
+	input: { content: string }
 ) {
 	requireSessionUser(sessionUserId);
 
@@ -89,10 +94,7 @@ export async function updateEvidencePost(
 
 	await db
 		.update(evidencePosts)
-		.set({
-			content: input.content,
-			visualStamp: input.visualStamp
-		})
+		.set({ content: input.content.trim() })
 		.where(eq(evidencePosts.id, postId));
 }
 
@@ -105,5 +107,6 @@ export async function deleteEvidencePost(sessionUserId: string, postId: string) 
 	}
 	assertOwnsEvidencePost(existing.userId, sessionUserId);
 
+	await deleteEvidencePhoto(existing.photoKey);
 	await db.delete(evidencePosts).where(eq(evidencePosts.id, postId));
 }

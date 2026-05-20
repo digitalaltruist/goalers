@@ -3,56 +3,47 @@ import type { Actions, PageServerLoad } from './$types';
 import { AuthzError } from '$lib/server/authz';
 import { createEvidencePost } from '$lib/server/evidence';
 import { listGoalsForUser } from '$lib/server/goals';
-import { isVisualStamp } from '$lib/stamps';
 
 export const load: PageServerLoad = async (event) => {
-	const userId = event.locals.user!.id;
-	const goals = await listGoalsForUser(userId);
+	const goals = await listGoalsForUser(event.locals.user!.id);
 	return { goals };
 };
 
-function parseEvidenceForm(formData: FormData) {
-	const goalId = formData.get('goal')?.toString() ?? '';
-	const content = formData.get('content')?.toString().trim() ?? '';
-	const visualStamp = formData.get('visual_stamp')?.toString() ?? '';
-
-	if (!goalId) {
-		return { error: 'Select a goal' as const };
-	}
-	if (!content) {
-		return { error: 'Describe what you did' as const };
-	}
-	if (content.length > 2000) {
-		return { error: 'Content must be 2000 characters or fewer' as const };
-	}
-	if (!isVisualStamp(visualStamp)) {
-		return { error: 'Select a visual stamp' as const };
-	}
-
-	return { goalId, content, visualStamp };
-}
-
 export const actions: Actions = {
 	default: async (event) => {
-		const userId = event.locals.user?.id;
-		if (!userId) {
-			return fail(401, { message: 'Authentication required' });
-		}
+		const userId = event.locals.user!.id;
+		const formData = await event.request.formData();
 
-		const parsed = parseEvidenceForm(await event.request.formData());
-		if ('error' in parsed) {
-			return fail(400, { message: parsed.error });
+		const goalId = formData.get('goal')?.toString() ?? '';
+		const content = formData.get('content')?.toString() ?? '';
+		const photo = formData.get('photo');
+
+		if (!goalId) {
+			return fail(400, { message: 'Select a goal' });
+		}
+		if (!content.trim()) {
+			return fail(400, { message: 'Describe what you did' });
+		}
+		if (!(photo instanceof File)) {
+			return fail(400, { message: 'Photo is required' });
 		}
 
 		try {
-			await createEvidencePost(userId, parsed);
-		} catch (error) {
-			if (error instanceof AuthzError) {
-				return fail(403, { message: error.message });
+			await createEvidencePost(userId, event.url.origin, {
+				goalId,
+				content,
+				photo
+			});
+		} catch (err) {
+			if (err instanceof AuthzError) {
+				return fail(403, { message: err.message });
+			}
+			if (err instanceof Error) {
+				return fail(400, { message: err.message });
 			}
 			return fail(500, { message: 'Could not post evidence' });
 		}
 
-		throw redirect(303, '/all-goals');
+		return redirect(303, '/all-goals');
 	}
 };

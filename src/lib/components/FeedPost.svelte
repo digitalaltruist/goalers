@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { formatRelativeTime } from '$lib/format';
 	import type { FeedPost } from '$lib/types';
-	import VisualStamp from './VisualStamp.svelte';
 
 	interface Props {
 		post: FeedPost;
 	}
 
 	let { post }: Props = $props();
+
+	let photoBroken = $state(false);
 </script>
 
 <article class="feed-post card">
 	<header>
-		<VisualStamp stamp={post.visualStamp} size="md" />
 		<div class="author-block">
 			<span class="author">{post.authorDisplayName}</span>
 			<span class="username">@{post.authorUsername}</span>
@@ -21,6 +21,25 @@
 	</header>
 
 	<p class="goal-ref">toward <strong>{post.goalTitle}</strong></p>
+
+	<figure class="photo-frame">
+		{#if photoBroken}
+			<div class="photo-fallback" role="img" aria-label="Evidence photo unavailable">
+				<span aria-hidden="true">📷</span>
+				<p>Photo unavailable</p>
+			</div>
+		{:else}
+			<img
+				src={post.photoUrl}
+				alt="Evidence from {post.authorDisplayName} for {post.goalTitle}"
+				loading="lazy"
+				onerror={() => {
+					photoBroken = true;
+				}}
+			/>
+		{/if}
+	</figure>
+
 	<p class="content">{post.content}</p>
 
 	<footer>
@@ -86,6 +105,39 @@
 	.goal-ref {
 		font-size: 0.8125rem;
 		color: var(--color-text-muted);
+	}
+
+	.photo-frame {
+		margin: 0;
+		border-radius: var(--radius-sm);
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface-muted);
+		aspect-ratio: 4 / 3;
+	}
+
+	.photo-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.photo-fallback {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.25rem;
+		width: 100%;
+		height: 100%;
+		min-height: 8rem;
+		color: var(--color-text-muted);
+		font-size: 0.875rem;
+	}
+
+	.photo-fallback span {
+		font-size: 1.5rem;
 	}
 
 	.content {

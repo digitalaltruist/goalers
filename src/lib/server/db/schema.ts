@@ -34,7 +34,8 @@ export const evidencePosts = pgTable('evidence_posts', {
 		.notNull()
 		.references(() => goals.id, { onDelete: 'cascade' }),
 	content: text('content').notNull(),
-	visualStamp: text('visual_stamp').notNull(),
+	photoUrl: text('photo_url').notNull(),
+	photoKey: text('photo_key').notNull(),
 	createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
