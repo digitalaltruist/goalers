@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { formatRelativeTime } from '$lib/format';
 	import type { FeedPost } from '$lib/types';
 
@@ -9,6 +10,33 @@
 	let { post }: Props = $props();
 
 	let photoBroken = $state(false);
+	let cheerCount = $state(0);
+	let cheeredByMe = $state(false);
+	let flaggedByMe = $state(false);
+	let cheering = $state(false);
+	let flagging = $state(false);
+
+	$effect(() => {
+		cheerCount = post.cheerCount;
+		cheeredByMe = post.cheeredByMe;
+		flaggedByMe = post.flaggedByMe;
+	});
+
+	function isCheerResult(
+		data: unknown
+	): data is { postId: string; cheerCount: number; cheeredByMe: boolean } {
+		return (
+			typeof data === 'object' &&
+			data !== null &&
+			'postId' in data &&
+			'cheerCount' in data &&
+			'cheeredByMe' in data
+		);
+	}
+
+	function isFlagResult(data: unknown): data is { postId: string; flaggedByMe: boolean } {
+		return typeof data === 'object' && data !== null && 'postId' in data && 'flaggedByMe' in data;
+	}
 </script>
 
 <article class="feed-post card">
@@ -43,25 +71,65 @@
 	<p class="content">{post.content}</p>
 
 	<footer>
-		<button
-			type="button"
-			class="cheer-btn"
-			class:cheered={post.cheeredByMe}
-			disabled
-			title="Cheers coming in a later stage"
+		<form
+			method="POST"
+			action="?/cheer"
+			class="cheer-form"
+			use:enhance={() => {
+				cheering = true;
+				return async ({ result, update }) => {
+					cheering = false;
+					if (result.type === 'success' && isCheerResult(result.data) && result.data.postId === post.id) {
+						cheerCount = result.data.cheerCount;
+						cheeredByMe = result.data.cheeredByMe;
+					}
+					await update();
+				};
+			}}
 		>
-			🙌 Cheer
-			<span class="cheer-count">{post.cheerCount}</span>
-		</button>
-		<button
-			type="button"
-			class="flag-btn"
-			disabled
-			title="Flagging coming in a later stage"
-			aria-label="Flag post"
+			<input type="hidden" name="postId" value={post.id} />
+			<button
+				type="submit"
+				class="cheer-btn"
+				class:cheered={cheeredByMe}
+				disabled={cheering}
+				aria-pressed={cheeredByMe}
+				aria-busy={cheering}
+				title={cheeredByMe ? 'Remove your cheer' : 'Cheer this post'}
+			>
+				🙌 {cheering ? '…' : 'Cheer'}
+				<span class="cheer-count">{cheerCount}</span>
+			</button>
+		</form>
+		<form
+			method="POST"
+			action="?/flag"
+			class="flag-form"
+			use:enhance={() => {
+				flagging = true;
+				return async ({ result, update }) => {
+					flagging = false;
+					if (result.type === 'success' && isFlagResult(result.data) && result.data.postId === post.id) {
+						flaggedByMe = result.data.flaggedByMe;
+					}
+					await update();
+				};
+			}}
 		>
-			⚑
-		</button>
+			<input type="hidden" name="postId" value={post.id} />
+			<button
+				type="submit"
+				class="flag-btn"
+				class:flagged={flaggedByMe}
+				disabled={flaggedByMe || flagging}
+				aria-pressed={flaggedByMe}
+				aria-busy={flagging}
+				aria-label={flaggedByMe ? 'Post flagged' : 'Flag post'}
+				title={flaggedByMe ? 'You flagged this post' : 'Flag inappropriate content'}
+			>
+				⚑
+			</button>
+		</form>
 	</footer>
 </article>
 
@@ -155,6 +223,11 @@
 		margin-top: 0.125rem;
 	}
 
+	.cheer-form,
+	.flag-form {
+		margin: 0;
+	}
+
 	.cheer-btn {
 		display: inline-flex;
 		align-items: center;
@@ -167,14 +240,27 @@
 		border-radius: 999px;
 		background: var(--color-surface);
 		color: var(--color-text-muted);
-		cursor: not-allowed;
-		opacity: 0.85;
+		cursor: pointer;
+		transition:
+			background 0.15s ease,
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.cheer-btn:hover:not(:disabled) {
+		background: var(--color-surface-muted);
+		color: var(--color-text);
 	}
 
 	.cheer-btn.cheered {
 		background: var(--color-success-soft);
 		border-color: var(--color-success);
 		color: var(--color-success);
+	}
+
+	.cheer-btn:disabled {
+		cursor: wait;
+		opacity: 0.75;
 	}
 
 	.cheer-count {
@@ -195,12 +281,27 @@
 		border-radius: var(--radius-sm);
 		background: transparent;
 		color: var(--color-text-muted);
-		cursor: not-allowed;
+		cursor: pointer;
 		opacity: 0.55;
 		flex-shrink: 0;
+		transition:
+			opacity 0.15s ease,
+			color 0.15s ease;
 	}
 
-	.flag-btn:hover {
-		opacity: 0.75;
+	.flag-btn:hover:not(:disabled) {
+		opacity: 0.85;
+		color: var(--color-text);
+	}
+
+	.flag-btn.flagged,
+	.flag-btn:disabled:not([aria-busy='true']) {
+		opacity: 0.35;
+		cursor: default;
+	}
+
+	.flag-btn:disabled[aria-busy='true'] {
+		cursor: wait;
+		opacity: 0.45;
 	}
 </style>

@@ -6,6 +6,7 @@ import { user } from '$lib/server/db/auth.schema';
 import { assertOwnsEvidencePost, AuthzError, requireSessionUser } from '$lib/server/authz';
 import { buildPhotoUrl, deleteEvidencePhoto, uploadEvidencePhoto } from '$lib/server/blobs';
 import { getGoalForUser } from '$lib/server/goals';
+import { loadPostSocialMeta } from '$lib/server/social';
 
 export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> {
 	requireSessionUser(sessionUserId);
@@ -27,6 +28,9 @@ export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> 
 		.innerJoin(user, eq(evidencePosts.userId, user.id))
 		.orderBy(desc(evidencePosts.createdAt));
 
+	const postIds = rows.map((row) => row.id);
+	const social = await loadPostSocialMeta(sessionUserId, postIds);
+
 	return rows.map((row) => ({
 		id: row.id,
 		goalId: row.goalId,
@@ -36,8 +40,9 @@ export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> 
 		content: row.content,
 		photoUrl: row.photoUrl,
 		createdAt: row.createdAt.toISOString(),
-		cheerCount: 0,
-		cheeredByMe: false
+		cheerCount: social.cheerCounts.get(row.id) ?? 0,
+		cheeredByMe: social.cheeredPostIds.has(row.id),
+		flaggedByMe: social.flaggedPostIds.has(row.id)
 	}));
 }
 

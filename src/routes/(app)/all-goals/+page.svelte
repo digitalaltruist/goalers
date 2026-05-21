@@ -11,12 +11,18 @@
 
 <header class="page-header">
 	<h1>All Goals</h1>
-	<p>Chronological evidence from everyone on Goalers.</p>
+	<p>
+		See proof from everyone on Goalers. Tap <strong>Cheer</strong> to encourage someone — tap again to
+		remove it. Use the flag if something looks off.
+	</p>
 </header>
 
 {#if data.posts.length === 0}
 	<div class="empty-state card">
-		<p>No evidence posts yet. Be the first to share progress toward a goal.</p>
+		<p>
+			No evidence posts yet. Create a goal on My Goals, post proof with the + button, then check back
+			here for cheers from others.
+		</p>
 	</div>
 {:else}
 	<div class="feed-list">

@@ -18,4 +18,5 @@ export interface FeedPost {
 	createdAt: string;
 	cheerCount: number;
 	cheeredByMe: boolean;
+	flaggedByMe: boolean;
 }

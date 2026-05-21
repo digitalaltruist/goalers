@@ -15,7 +15,10 @@
 <header class="page-header goals-header">
 	<div>
 		<h1>Hey, {displayName}</h1>
-		<p>Your active goals and recent accountability commitments.</p>
+		<p>
+			Set goals here, post evidence with +, then head to <a href={resolve('/all-goals')}>All Goals</a> to
+			cheer others and see your posts in the feed.
+		</p>
 	</div>
 	<a class="btn btn-primary" href={resolve('/goals/new')}>New goal</a>
 </header>
@@ -24,7 +27,10 @@
 	<h2 id="goals-heading" class="section-title">Your goals</h2>
 	{#if data.goals.length === 0}
 		<div class="empty-state card">
-			<p>No goals yet. Create your first commitment to start posting evidence.</p>
+			<p>
+				No goals yet. Create a commitment, post photo evidence, then get cheered on in the All Goals
+				feed.
+			</p>
 			<a class="btn btn-primary" href={resolve('/goals/new')}>Create a goal</a>
 		</div>
 	{:else}
