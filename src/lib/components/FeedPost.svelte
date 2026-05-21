@@ -5,9 +5,11 @@
 
 	interface Props {
 		post: FeedPost;
+		/** Show cheer count only — no cheer/flag actions (e.g. My Cheers). */
+		readOnly?: boolean;
 	}
 
-	let { post }: Props = $props();
+	let { post, readOnly = false }: Props = $props();
 
 	let photoBroken = $state(false);
 	let cheerCount = $state(0);
@@ -71,65 +73,76 @@
 	<p class="content">{post.content}</p>
 
 	<footer>
-		<form
-			method="POST"
-			action="?/cheer"
-			class="cheer-form"
-			use:enhance={() => {
-				cheering = true;
-				return async ({ result, update }) => {
-					cheering = false;
-					if (result.type === 'success' && isCheerResult(result.data) && result.data.postId === post.id) {
-						cheerCount = result.data.cheerCount;
-						cheeredByMe = result.data.cheeredByMe;
-					}
-					await update();
-				};
-			}}
-		>
-			<input type="hidden" name="postId" value={post.id} />
-			<button
-				type="submit"
-				class="cheer-btn"
-				class:cheered={cheeredByMe}
-				disabled={cheering}
-				aria-pressed={cheeredByMe}
-				aria-busy={cheering}
-				title={cheeredByMe ? 'Remove your cheer' : 'Cheer this post'}
+		{#if readOnly}
+			<span
+				class="cheer-btn cheer-btn-readonly"
+				class:cheered={cheerCount > 0}
+				aria-label="{cheerCount} cheers received"
 			>
-				🙌 {cheering ? '…' : 'Cheer'}
+				🙌 Cheer
 				<span class="cheer-count">{cheerCount}</span>
-			</button>
-		</form>
-		<form
-			method="POST"
-			action="?/flag"
-			class="flag-form"
-			use:enhance={() => {
-				flagging = true;
-				return async ({ result, update }) => {
-					flagging = false;
-					if (result.type === 'success' && isFlagResult(result.data) && result.data.postId === post.id) {
-						flaggedByMe = result.data.flaggedByMe;
-					}
-					await update();
-				};
-			}}
-		>
-			<input type="hidden" name="postId" value={post.id} />
-			<button
-				type="submit"
-				class="flag-btn"
-				class:flagged={flaggedByMe}
-				disabled={flaggedByMe || flagging}
-				aria-pressed={flaggedByMe}
-				aria-busy={flagging}
-				aria-label={flaggedByMe ? 'Post flagged' : 'Flag post'}
-				title={flaggedByMe ? 'You flagged this post' : 'Flag inappropriate content'}
+			</span>
+		{:else}
+			<form
+				method="POST"
+				action="?/cheer"
+				class="cheer-form"
+				use:enhance={() => {
+					cheering = true;
+					return async ({ result, update }) => {
+						cheering = false;
+						if (result.type === 'success' && isCheerResult(result.data) && result.data.postId === post.id) {
+							cheerCount = result.data.cheerCount;
+							cheeredByMe = result.data.cheeredByMe;
+						}
+						await update();
+					};
+				}}
 			>
-				⚑
-			</button>
-		</form>
+				<input type="hidden" name="postId" value={post.id} />
+				<button
+					type="submit"
+					class="cheer-btn"
+					class:cheered={cheeredByMe}
+					disabled={cheering}
+					aria-pressed={cheeredByMe}
+					aria-busy={cheering}
+					title={cheeredByMe ? 'Remove your cheer' : 'Cheer this post'}
+				>
+					🙌 {cheering ? '…' : 'Cheer'}
+					<span class="cheer-count">{cheerCount}</span>
+				</button>
+			</form>
+			<form
+				method="POST"
+				action="?/flag"
+				class="flag-form"
+				use:enhance={() => {
+					flagging = true;
+					return async ({ result, update }) => {
+						flagging = false;
+						if (result.type === 'success' && isFlagResult(result.data) && result.data.postId === post.id) {
+							flaggedByMe = result.data.flaggedByMe;
+						}
+						await update();
+					};
+				}}
+			>
+				<input type="hidden" name="postId" value={post.id} />
+				<button
+					type="submit"
+					class="flag-btn"
+					class:flagged={flaggedByMe}
+					disabled={flaggedByMe || flagging}
+					aria-pressed={flaggedByMe}
+					aria-busy={flagging}
+					aria-label={flaggedByMe ? 'Post flagged' : 'Flag post'}
+					title={flaggedByMe ? 'You flagged this post' : 'Flag inappropriate content'}
+				>
+					⚑
+				</button>
+			</form>
+		{/if}
 	</footer>
 </article>
 
@@ -263,6 +276,10 @@
 	.cheer-btn:disabled {
 		cursor: wait;
 		opacity: 0.75;
+	}
+
+	.cheer-btn-readonly {
+		cursor: default;
 	}
 
 	.cheer-count {

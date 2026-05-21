@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import FeedPost from '$lib/components/FeedPost.svelte';
 	import type { PageData } from './$types';
 
@@ -6,28 +7,28 @@
 </script>
 
 <svelte:head>
-	<title>All Goals — Goalers</title>
+	<title>My Cheers — Goalers</title>
 </svelte:head>
 
 <header class="page-header">
-	<h1>All Goals</h1>
+	<h1>My Cheers</h1>
 	<p>
-		See proof from everyone on Goalers. Tap <strong>Cheer</strong> to encourage someone — tap again to
-		remove it. Use the flag if something looks off.
+		All evidence you've posted, with how many cheers each one received. Post new proof from My Goals
+		with the + button.
 	</p>
 </header>
 
 {#if data.posts.length === 0}
 	<div class="empty-state card">
 		<p>
-			No evidence posts yet. Create a goal on My Goals, post proof with the + button, then check back
-			here for cheers from others.
+			No evidence posts yet. Create a goal on <a href={resolve('/my-goals')}>My Goals</a>, post proof
+			with the + button, then check back here for cheers you've received.
 		</p>
 	</div>
 {:else}
 	<div class="feed-list">
 		{#each data.posts as post (post.id)}
-			<FeedPost {post} />
+			<FeedPost {post} readOnly />
 		{/each}
 	</div>
 {/if}

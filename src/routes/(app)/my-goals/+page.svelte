@@ -16,8 +16,8 @@
 	<div>
 		<h1>Hey, {displayName}</h1>
 		<p>
-			Set goals here, post evidence with +, then head to <a href={resolve('/all-goals')}>All Goals</a> to
-			cheer others and see your posts in the feed.
+			Set goals here, post evidence with +, then head to <a href={resolve('/all-cheers')}>All Cheers</a> to
+			cheer others or <a href={resolve('/my-cheers')}>My Cheers</a> to see cheers on your posts.
 		</p>
 	</div>
 	<a class="btn button-dark-surface-cta" href={resolve('/goals/new')}>New goal</a>
@@ -28,8 +28,7 @@
 	{#if data.goals.length === 0}
 		<div class="empty-state card">
 			<p>
-				No goals yet. Create a commitment, post photo evidence, then get cheered on in the All Goals
-				feed.
+				No goals yet. Create a commitment, post photo evidence, then get cheered on in All Cheers.
 			</p>
 			<a class="btn button-dark-surface-cta" href={resolve('/goals/new')}>Create a goal</a>
 		</div>

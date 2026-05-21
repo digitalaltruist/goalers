@@ -44,6 +44,6 @@ export const actions: Actions = {
 			return fail(500, { message: 'Could not post evidence' });
 		}
 
-		return redirect(303, '/all-goals');
+		return redirect(303, '/all-cheers');
 	}
 };

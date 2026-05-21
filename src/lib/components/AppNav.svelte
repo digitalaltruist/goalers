@@ -15,7 +15,8 @@
 
 	const links = [
 		{ href: '/my-goals', label: 'My Goals' },
-		{ href: '/all-goals', label: 'All Goals' }
+		{ href: '/my-cheers', label: 'My Cheers' },
+		{ href: '/all-cheers', label: 'All Cheers' }
 	] as const;
 
 	let menuOpen = $state(false);
@@ -101,7 +102,6 @@
 		{#each links as link}
 			<a href={resolve(link.href)} class:active={isActive(link.href)}>{link.label}</a>
 		{/each}
-		<a href={resolve('/goals/new')} class:active={isActive('/goals/new')}>New goal</a>
 	</nav>
 {/if}
 

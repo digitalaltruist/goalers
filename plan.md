@@ -717,8 +717,6 @@ Success Criteria:
 Estimated Time:
 ~2 hours
 
-
-
 ## **5.1 Final visual pass: night-mode athletic style**
 
 Implement a CSS-only visual refresh. Do **not** change app logic, routes, database code, auth behavior, or component structure unless absolutely necessary for class/style cleanup.
@@ -945,28 +943,35 @@ Keep the existing “G” app icon, but switch it to:
 Keep the implementation CSS-focused and low-risk. Do not redesign flows. Do not add new features. Do not introduce animation libraries.
 
 ## Stage 5.2 Navigation restructure
+
 Update the bottom navigation so goal creation is no longer a primary nav item.
+
 ### Required bottom nav items
+
 The bottom navbar should contain exactly:
+
 1. **My Goals**
-   - Existing destination stays as-is.
-   - This remains the user’s main personal goals page.
-   - Do not add “New Goal” to the navbar.
-   - Goal creation should remain available only through the CTA already present on the My Goals screen.
+  - Existing destination stays as-is.
+  - This remains the user’s main personal goals page.
+  - Do not add “New Goal” to the navbar.
+  - Goal creation should remain available only through the CTA already present on the My Goals screen.
 2. **My Cheers**
-   - New or existing personal evidence/cheers view.
-   - Purpose: show all evidence posts uploaded by the current user in one place.
-   - Each evidence item should show its received cheer count.
-   - This is not for browsing other users’ evidence.
+  - New or existing personal evidence/cheers view.
+  - Purpose: show all evidence posts uploaded by the current user in one place.
+  - Each evidence item should show its received cheer count.
+  - This is not for browsing other users’ evidence.
 3. **All Cheers**
-   - Rename the current **All goals** nav item/page concept to **All Cheers**.
-   - This page should continue to behave like the current “All goals” feed:
-     - show evidence posts from all users
-     - show each evidence item with its respective cheers
-     - preserve existing feed functionality
+  - Rename the current **All goals** nav item/page concept to **All Cheers**.
+  - This page should continue to behave like the current “All goals” feed:
+    - show evidence posts from all users
+    - show each evidence item with its respective cheers
+    - preserve existing feed functionality
+
 ### URL change required
+
 The current `/all-goals` route was a naming mistake.
 Change it to:
+
 ```txt
 /all-cheers
 
@@ -992,9 +997,93 @@ Acceptance criteria
 * No visible nav item says New Goal.
 * No visible nav item says All goals.
 * The My Goals CTA remains the only obvious way to create a new goal.
+```
 
+---
 
+## Stage 5.3 — Simplify goal creation flow in `/my-goals`
 
+### Product intent
+
+Creating a new goal should feel intentional, not heavily promoted.
+
+Right now there are multiple competing CTAs for goal creation:
+- top “New goal” button
+- empty-state “Create a goal” card
+
+At the same time, the floating `+` FAB is reserved for posting evidence, not creating goals.
+
+We want goal creation to become a quieter, embedded action inside the goals feed itself.
+
+---
+
+## Required changes
+
+### 1. Remove top “New goal” button
+
+Remove the standalone “New goal” button currently shown below the intro copy in `/my-goals`.
+
+Do not replace it with another top-level CTA.
+
+---
+
+### 2. Make the “Create a goal” CTA persistent
+
+The current empty-state “Create a goal” component should no longer only appear when the user has zero goals.
+
+Instead:
+- always render it at the bottom of the goals feed
+- after the final goal card
+
+Behavior:
+- zero goals → CTA appears as the first/only feed item
+- one or more goals → CTA appears after the last goal card
+
+This becomes the single dedicated UI entry point for goal creation inside `/my-goals`.
+
+---
+
+### 3. Redesign the CTA so it feels embedded in the feed
+
+The existing empty-state card is too visually heavy and currently looks like a separate content container.
+
+The new version should feel like:
+- an inline feed action
+- lighter weight
+- calmer
+- secondary to the actual goals
+
+Visual direction:
+- centered horizontally
+- reduced vertical padding
+- no large bordered card container
+- avoid looking like a standard goal card
+- subtle spacing separation from the final goal item
+- cleaner and more minimal overall
+
+Suggested structure:
+- short supporting text
+- single centered “Create goal” button
+
+The experience should communicate:
+
+> “You can create another goal if you want”
+
+—not—
+
+> “Please create more goals immediately”
+
+---
+
+## Important interaction clarification
+
+The floating `+` FAB remains unchanged.
+
+It is specifically used for:
+- posting evidence
+- not creating goals
+
+Do not repurpose the FAB in this stage.
 ---
 
 # Total Estimated Time
@@ -1290,3 +1379,5 @@ The project succeeds if:
 - the app creates a feeling of accountability and momentum
 
 Even with minimal gamification systems.
+```
+

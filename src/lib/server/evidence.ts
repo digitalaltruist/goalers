@@ -46,6 +46,45 @@ export async function listFeedPosts(sessionUserId: string): Promise<FeedPost[]> 
 	}));
 }
 
+export async function listMyEvidencePosts(sessionUserId: string): Promise<FeedPost[]> {
+	requireSessionUser(sessionUserId);
+
+	const rows = await db
+		.select({
+			id: evidencePosts.id,
+			goalId: evidencePosts.goalId,
+			goalTitle: goals.title,
+			authorUsername: profiles.username,
+			authorDisplayName: user.name,
+			content: evidencePosts.content,
+			photoUrl: evidencePosts.photoUrl,
+			createdAt: evidencePosts.createdAt
+		})
+		.from(evidencePosts)
+		.innerJoin(goals, eq(evidencePosts.goalId, goals.id))
+		.innerJoin(profiles, eq(evidencePosts.userId, profiles.id))
+		.innerJoin(user, eq(evidencePosts.userId, user.id))
+		.where(eq(evidencePosts.userId, sessionUserId))
+		.orderBy(desc(evidencePosts.createdAt));
+
+	const postIds = rows.map((row) => row.id);
+	const social = await loadPostSocialMeta(sessionUserId, postIds);
+
+	return rows.map((row) => ({
+		id: row.id,
+		goalId: row.goalId,
+		goalTitle: row.goalTitle,
+		authorUsername: row.authorUsername,
+		authorDisplayName: row.authorDisplayName,
+		content: row.content,
+		photoUrl: row.photoUrl,
+		createdAt: row.createdAt.toISOString(),
+		cheerCount: social.cheerCounts.get(row.id) ?? 0,
+		cheeredByMe: social.cheeredPostIds.has(row.id),
+		flaggedByMe: social.flaggedPostIds.has(row.id)
+	}));
+}
+
 export async function createEvidencePost(
 	sessionUserId: string,
 	origin: string,

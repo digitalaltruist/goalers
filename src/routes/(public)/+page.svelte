@@ -16,7 +16,7 @@
 		</p>
 		<div class="cta-row">
 			<a class="btn button-dark-surface-cta" href={resolve('/signup')}>Get started</a>
-			<a class="btn btn-secondary" href={resolve('/all-goals')}>Browse All Goals</a>
+			<a class="btn btn-secondary" href={resolve('/all-cheers')}>Browse All Cheers</a>
 		</div>
 	</div>
 </section>
@@ -45,7 +45,7 @@
 	<div class="container">
 		<h2>Built for momentum</h2>
 		<p class="preview-copy">
-			Track goals on My Goals, post evidence as you go, and see everyone's progress in All Goals —
+			Track goals on My Goals, post evidence as you go, and see everyone's progress in All Cheers —
 			a chronological view of evidence from the community.
 		</p>
 		<a class="btn button-dark-surface-cta" href={resolve('/my-goals')}>View demo (My Goals)</a>
