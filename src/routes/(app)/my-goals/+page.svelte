@@ -13,43 +13,27 @@
 </svelte:head>
 
 <header class="page-header goals-header">
-	<div>
-		<h1>Hey, {displayName}</h1>
-		<p>
-			Set goals here, post evidence with +, then head to <a href={resolve('/all-cheers')}>All Cheers</a> to
-			cheer others or <a href={resolve('/my-cheers')}>My Cheers</a> to see cheers on your posts.
-		</p>
-	</div>
-	<a class="btn button-dark-surface-cta" href={resolve('/goals/new')}>New goal</a>
+	<h1>Hey, {displayName}</h1>
+	<p>
+		Set goals here, post evidence with +, then head to <a href={resolve('/all-cheers')}>All Cheers</a> to
+		cheer others or <a href={resolve('/my-cheers')}>My Cheers</a> to see cheers on your posts.
+	</p>
 </header>
 
 <section class="goals-section" aria-labelledby="goals-heading">
 	<h2 id="goals-heading" class="section-title">Your goals</h2>
-	{#if data.goals.length === 0}
-		<div class="empty-state card">
-			<p>
-				No goals yet. Create a commitment, post photo evidence, then get cheered on in All Cheers.
-			</p>
-			<a class="btn button-dark-surface-cta" href={resolve('/goals/new')}>Create a goal</a>
+	<div class="goals-grid">
+		{#each data.goals as goal (goal.id)}
+			<GoalCard {goal} />
+		{/each}
+		<div class="create-goal-phantom" aria-label="Add a new goal">
+			<p class="create-goal-phantom-text">Ready to commit? Add a new goal.</p>
+			<a class="btn btn-secondary btn-sm" href={resolve('/goals/new')}>Create goal</a>
 		</div>
-	{:else}
-		<div class="goals-grid">
-			{#each data.goals as goal (goal.id)}
-				<GoalCard {goal} />
-			{/each}
-		</div>
-	{/if}
+	</div>
 </section>
 
 <style>
-	.goals-header {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: 1rem;
-	}
-
 	.section-title {
 		font-size: 0.875rem;
 		font-weight: 600;
@@ -64,18 +48,25 @@
 		gap: 1rem;
 	}
 
-	.empty-state {
-		padding: 2rem 1.5rem;
+	.create-goal-phantom {
+		grid-column: 1 / -1;
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		gap: 1rem;
-		max-width: 28rem;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		gap: 0.5rem;
+		padding: 0.65rem 1rem;
+		border-radius: var(--radius-md);
+		border: 1px solid rgba(199, 255, 26, 0.2);
+		background: color-mix(in srgb, var(--color-surface) 72%, transparent);
 	}
 
-	.empty-state p {
+	.create-goal-phantom-text {
+		margin: 0;
+		font-size: 0.8125rem;
+		line-height: 1.35;
 		color: var(--color-text-muted);
-		line-height: 1.5;
 	}
 
 	@media (min-width: 640px) {

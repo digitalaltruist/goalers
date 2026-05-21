@@ -1008,6 +1008,7 @@ Acceptance criteria
 Creating a new goal should feel intentional, not heavily promoted.
 
 Right now there are multiple competing CTAs for goal creation:
+
 - top “New goal” button
 - empty-state “Create a goal” card
 
@@ -1032,10 +1033,12 @@ Do not replace it with another top-level CTA.
 The current empty-state “Create a goal” component should no longer only appear when the user has zero goals.
 
 Instead:
+
 - always render it at the bottom of the goals feed
 - after the final goal card
 
 Behavior:
+
 - zero goals → CTA appears as the first/only feed item
 - one or more goals → CTA appears after the last goal card
 
@@ -1048,12 +1051,14 @@ This becomes the single dedicated UI entry point for goal creation inside `/my-g
 The existing empty-state card is too visually heavy and currently looks like a separate content container.
 
 The new version should feel like:
+
 - an inline feed action
 - lighter weight
 - calmer
 - secondary to the actual goals
 
 Visual direction:
+
 - centered horizontally
 - reduced vertical padding
 - no large bordered card container
@@ -1062,6 +1067,7 @@ Visual direction:
 - cleaner and more minimal overall
 
 Suggested structure:
+
 - short supporting text
 - single centered “Create goal” button
 
@@ -1080,11 +1086,11 @@ The experience should communicate:
 The floating `+` FAB remains unchanged.
 
 It is specifically used for:
+
 - posting evidence
 - not creating goals
 
-Do not repurpose the FAB in this stage.
----
+## Do not repurpose the FAB in this stage.
 
 # Total Estimated Time
 
@@ -1379,5 +1385,8 @@ The project succeeds if:
 - the app creates a feeling of accountability and momentum
 
 Even with minimal gamification systems.
+
+```
+
 ```
 
