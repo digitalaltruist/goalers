@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { formatFrequencyLabel } from '$lib/format';
 	import type { GoalSummary } from '$lib/types';
 
 	interface Props {
@@ -12,12 +13,12 @@
 <article class="goal-card card">
 	<div class="goal-card-header">
 		<h3>{goal.title}</h3>
-		<span class="badge badge-accent">{goal.frequencyTarget}</span>
+		<span class="badge badge-accent">{formatFrequencyLabel(goal.frequencyTarget)}</span>
 	</div>
 	<p class="description">{goal.description}</p>
 	<footer>
-		<span class="meta">{goal.evidenceCount} evidence posts</span>
-		<a class="btn btn-ghost btn-sm" href={resolve('/evidence/new')}>Post evidence</a>
+		<span class="meta">{goal.evidenceCount} progress posts</span>
+		<a class="btn btn-ghost btn-sm" href={resolve('/evidence/new')}>Post progress</a>
 	</footer>
 </article>
 

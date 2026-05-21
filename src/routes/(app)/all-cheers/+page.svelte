@@ -20,7 +20,7 @@
 {#if data.posts.length === 0}
 	<div class="empty-state card">
 		<p>
-			No evidence posts yet. Create a goal on My Goals, post proof with the + button, then check back
+			No progress posts yet. Create a goal on My Goals, post proof with the + button, then check back
 			here for cheers from others.
 		</p>
 	</div>
@@ -36,13 +36,20 @@
 	.feed-list {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
 		gap: 1rem;
 		max-width: 40rem;
+		margin-inline: auto;
+	}
+
+	.feed-list :global(.feed-post) {
+		width: 100%;
 	}
 
 	.empty-state {
 		padding: 2rem 1.5rem;
 		max-width: 28rem;
+		margin-inline: auto;
 		color: var(--color-text-muted);
 		line-height: 1.5;
 	}

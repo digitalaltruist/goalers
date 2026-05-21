@@ -28,8 +28,13 @@
 		<textarea id="description" name="description" rows="3" placeholder="What are you working toward?"></textarea>
 	</div>
 	<div class="form-field">
-		<label for="frequency">Frequency target</label>
-		<input id="frequency" type="text" name="frequency" placeholder="3x/week" />
+		<label for="frequency">I want to work towards my goal at least…</label>
+		<select id="frequency" name="frequency" required>
+			<option value="daily">Every day</option>
+			<option value="weekly">Every week</option>
+			<option value="biweekly">Every two weeks</option>
+			<option value="monthly">Every month</option>
+		</select>
 		<span class="hint">Informational only — no automated validation in MVP.</span>
 	</div>
 	<div class="actions">

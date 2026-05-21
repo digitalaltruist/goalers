@@ -5,7 +5,7 @@
 <a
 	class="btn button-dark-surface-cta evidence-fab"
 	href={resolve('/evidence/new')}
-	aria-label="Post evidence"
+	aria-label="Post progress"
 >
 	<span class="fab-icon" aria-hidden="true">+</span>
 </a>

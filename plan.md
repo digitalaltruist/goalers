@@ -1106,6 +1106,70 @@ This estimate assumes:
 
 ---
 
+## Stage 5.4 more polish fixes.
+
+Please make the following targeted changes only. Do not introduce new features or restructure unrelated code.
+
+### 1. Fix dark-background CTA hover state
+
+The dark-background CTA button hover state is currently turning white. This is wrong.
+
+For CTA buttons on dark backgrounds, the hover state should remain in the lime family. Use a slightly adjusted lime-green hover color that feels interactive but still belongs with the existing CTA style.
+
+Current intent:
+
+- Default CTA uses lime text / lime treatment on dark background.
+- Hover should be a lime variant, not white.
+- Preserve the existing bold, playful button treatment.
+
+### 2. Change `/goals/new` target frequency field
+
+On the create goal screen at `/goals/new`, replace the current open text input for the target frequency with a dropdown/select.
+
+The field label should read:
+
+> I want to work towards my goal at least…
+
+Use the following options exactly:
+
+| Label | Value |
+
+|---|---|
+
+| Once a day | `daily` |
+
+| Once a week | `weekly` |
+
+| Once every two weeks | `biweekly` |
+
+| Once a month | `monthly` |
+
+Use the normalized values above when saving/submitting the form.
+
+Use a native `<select>` component unless there is already a shared dropdown component in the codebase.
+
+### 3. Center card content horizontally
+
+In the following sections, all content inside cards should be centered horizontally:
+
+- My Goals
+- My Cheers
+- All Cheers
+
+This applies to card titles, metadata, body text, empty states inside cards, CTA areas, and action rows where appropriate.
+
+Important: keep the cards readable and balanced. Do not center the entire page layout unless already intended — only the card contents.
+
+## Constraints
+
+- Keep changes minimal and localized.
+- Do not change routes, database schema, or auth logic.
+- Do not rename existing components unless necessary.
+- Preserve the current visual language: bold, playful, soccer-adjacent, lime-on-dark where relevant.
+- After changes, check that `/my-goals`, `/my-cheers`, `/all-cheers`, and `/goals/new` still render correctly.
+
+---
+
 # Session Milestone Plan
 
 ## By Session 10 (Work In Progress)

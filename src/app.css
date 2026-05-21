@@ -155,15 +155,16 @@ svg {
 }
 
 .btn.button-dark-surface-cta:hover {
-	background: #b7f000;
+	background: #d4ff4d;
 	color: #07100c;
-	border-color: #fff;
-	box-shadow: 0 6px 0 #fff;
+	border-color: #a8d918;
+	box-shadow: 0 6px 0 #6d8f0f;
 }
 
 .btn.button-dark-surface-cta:active {
 	transform: translateY(3px);
-	box-shadow: 0 3px 0 #fff;
+	box-shadow: 0 3px 0 #6d8f0f;
+	border-color: #83a912;
 }
 
 .btn.button-dark-surface-cta.evidence-fab {
@@ -207,7 +208,7 @@ svg {
 	box-shadow: var(--shadow-sm);
 }
 
-/* Inverted light cards (goals + evidence feed) */
+/* Inverted light cards (goals + progress feed) */
 .goal-card,
 .feed-post,
 .evidence-card,
@@ -343,7 +344,7 @@ svg {
 	letter-spacing: 0.02em;
 }
 
-/* Evidence sheet (mobile) */
+/* Progress sheet (mobile) */
 .app-shell.sheet-open {
 	background: var(--color-bg);
 }

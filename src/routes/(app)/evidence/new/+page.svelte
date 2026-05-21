@@ -24,13 +24,13 @@
 </script>
 
 <svelte:head>
-	<title>Post evidence — Goalers</title>
+	<title>Post progress — Goalers</title>
 </svelte:head>
 
 <div class="evidence-sheet">
 	<header class="sheet-header">
 		<a class="sheet-back" href={resolve('/my-goals')}>Cancel</a>
-		<h1 class="sheet-title">Post evidence</h1>
+		<h1 class="sheet-title">Post progress</h1>
 		<span class="sheet-spacer" aria-hidden="true"></span>
 	</header>
 
@@ -39,7 +39,7 @@
 
 		{#if !hasGoals}
 			<div class="empty-state sheet-empty">
-				<p>Create a goal before you can post evidence.</p>
+				<p>Create a goal before you can post progress.</p>
 				<a class="btn btn-primary" href={resolve('/goals/new')}>Create a goal</a>
 			</div>
 		{:else}
@@ -107,7 +107,7 @@
 
 	{#if hasGoals}
 		<footer class="sheet-footer">
-			<button type="submit" form="evidence-form" class="btn btn-primary sheet-submit">Post evidence</button>
+			<button type="submit" form="evidence-form" class="btn btn-primary sheet-submit">Post progress</button>
 		</footer>
 	{/if}
 </div>

@@ -54,14 +54,14 @@
 
 	<figure class="photo-frame">
 		{#if photoBroken}
-			<div class="photo-fallback" role="img" aria-label="Evidence photo unavailable">
+			<div class="photo-fallback" role="img" aria-label="Progress photo unavailable">
 				<span aria-hidden="true">📷</span>
 				<p>Photo unavailable</p>
 			</div>
 		{:else}
 			<img
 				src={post.photoUrl}
-				alt="Evidence from {post.authorDisplayName} for {post.goalTitle}"
+				alt="Progress from {post.authorDisplayName} for {post.goalTitle}"
 				loading="lazy"
 				onerror={() => {
 					photoBroken = true;

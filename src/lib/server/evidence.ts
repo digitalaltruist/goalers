@@ -132,7 +132,7 @@ export async function updateEvidencePost(
 
 	const existing = await getEvidencePostForUser(postId, sessionUserId);
 	if (!existing) {
-		throw new AuthzError('Evidence post not found');
+		throw new AuthzError('Progress post not found');
 	}
 	assertOwnsEvidencePost(existing.userId, sessionUserId);
 
@@ -147,7 +147,7 @@ export async function deleteEvidencePost(sessionUserId: string, postId: string) 
 
 	const existing = await getEvidencePostForUser(postId, sessionUserId);
 	if (!existing) {
-		throw new AuthzError('Evidence post not found');
+		throw new AuthzError('Progress post not found');
 	}
 	assertOwnsEvidencePost(existing.userId, sessionUserId);
 

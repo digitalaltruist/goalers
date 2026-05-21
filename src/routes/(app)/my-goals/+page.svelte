@@ -15,7 +15,7 @@
 <header class="page-header goals-header">
 	<h1>Hey, {displayName}</h1>
 	<p>
-		Set goals here, post evidence with +, then head to <a href={resolve('/all-cheers')}>All Cheers</a> to
+		Set goals here, post progress with +, then head to <a href={resolve('/all-cheers')}>All Cheers</a> to
 		cheer others or <a href={resolve('/my-cheers')}>My Cheers</a> to see cheers on your posts.
 	</p>
 </header>
@@ -44,12 +44,23 @@
 	}
 
 	.goals-grid {
-		display: grid;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		gap: 1rem;
+		width: 100%;
+		margin-inline: auto;
+	}
+
+	.goals-grid :global(.goal-card),
+	.create-goal-phantom {
+		box-sizing: border-box;
+		width: 100%;
+		max-width: 100%;
+		flex: 1 1 100%;
 	}
 
 	.create-goal-phantom {
-		grid-column: 1 / -1;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -70,14 +81,18 @@
 	}
 
 	@media (min-width: 640px) {
-		.goals-grid {
-			grid-template-columns: repeat(2, 1fr);
+		.goals-grid :global(.goal-card),
+		.create-goal-phantom {
+			flex: 1 1 calc(50% - 0.5rem);
+			max-width: calc(50% - 0.5rem);
 		}
 	}
 
 	@media (min-width: 960px) {
-		.goals-grid {
-			grid-template-columns: repeat(3, 1fr);
+		.goals-grid :global(.goal-card),
+		.create-goal-phantom {
+			flex: 1 1 calc(33.333% - 0.67rem);
+			max-width: calc(33.333% - 0.67rem);
 		}
 	}
 </style>

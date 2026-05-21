@@ -11,7 +11,7 @@
 		<p class="eyebrow">Social accountability, simplified</p>
 		<h1>Commit publicly. Post proof. Get cheered on.</h1>
 		<p class="lead">
-			Goalers turns self-improvement into a lightweight social experience. Share evidence of
+			Goalers turns self-improvement into a lightweight social experience. Share your
 			progress, build momentum, and stay consistent with encouragement from others.
 		</p>
 		<div class="cta-row">
@@ -45,8 +45,8 @@
 	<div class="container">
 		<h2>Built for momentum</h2>
 		<p class="preview-copy">
-			Track goals on My Goals, post evidence as you go, and see everyone's progress in All Cheers —
-			a chronological view of evidence from the community.
+			Track goals on My Goals, post progress as you go, and see everyone's progress in All Cheers —
+			a chronological view of progress from the community.
 		</p>
 		<a class="btn button-dark-surface-cta" href={resolve('/my-goals')}>View demo (My Goals)</a>
 	</div>

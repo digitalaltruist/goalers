@@ -40,7 +40,9 @@
 		border-radius: var(--radius-sm);
 		background: var(--color-primary);
 		color: #07100c;
-		font-size: 1rem;
-		font-weight: 700;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		font-weight: 400;
+		line-height: 1;
 	}
 </style>

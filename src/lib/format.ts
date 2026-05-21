@@ -13,6 +13,18 @@ export function formatRelativeTime(iso: string): string {
 	return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
+const FREQUENCY_LABELS: Record<string, string> = {
+	daily: 'Every day',
+	weekly: 'Every week',
+	biweekly: 'Every two weeks',
+	monthly: 'Every month'
+};
+
+export function formatFrequencyLabel(value: string): string {
+	const key = value.trim().toLowerCase();
+	return FREQUENCY_LABELS[key] ?? value;
+}
+
 export function getInitials(displayName: string): string {
 	const parts = displayName.trim().split(/\s+/).filter(Boolean);
 	if (parts.length >= 2) {

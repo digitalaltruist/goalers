@@ -16,7 +16,7 @@
 <div class="auth-page container">
 	<div class="auth-card card">
 		<h1>Welcome back</h1>
-		<p class="subtitle">Log in to post evidence and cheer others on.</p>
+		<p class="subtitle">Log in to post progress and cheer others on.</p>
 
 		<form class="auth-form" method="post" action="?/signInEmail" use:enhance>
 			{#if redirectTo}

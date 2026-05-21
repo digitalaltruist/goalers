@@ -41,7 +41,7 @@ export const actions: Actions = {
 			if (err instanceof Error) {
 				return fail(400, { message: err.message });
 			}
-			return fail(500, { message: 'Could not post evidence' });
+			return fail(500, { message: 'Could not post progress' });
 		}
 
 		return redirect(303, '/all-cheers');
