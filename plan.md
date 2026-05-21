@@ -944,6 +944,57 @@ Keep the existing “G” app icon, but switch it to:
 
 Keep the implementation CSS-focused and low-risk. Do not redesign flows. Do not add new features. Do not introduce animation libraries.
 
+## Stage 5.2 Navigation restructure
+Update the bottom navigation so goal creation is no longer a primary nav item.
+### Required bottom nav items
+The bottom navbar should contain exactly:
+1. **My Goals**
+   - Existing destination stays as-is.
+   - This remains the user’s main personal goals page.
+   - Do not add “New Goal” to the navbar.
+   - Goal creation should remain available only through the CTA already present on the My Goals screen.
+2. **My Cheers**
+   - New or existing personal evidence/cheers view.
+   - Purpose: show all evidence posts uploaded by the current user in one place.
+   - Each evidence item should show its received cheer count.
+   - This is not for browsing other users’ evidence.
+3. **All Cheers**
+   - Rename the current **All goals** nav item/page concept to **All Cheers**.
+   - This page should continue to behave like the current “All goals” feed:
+     - show evidence posts from all users
+     - show each evidence item with its respective cheers
+     - preserve existing feed functionality
+### URL change required
+The current `/all-goals` route was a naming mistake.
+Change it to:
+```txt
+/all-cheers
+
+Requirements:
+
+* Update the route folder/file from /all-goals to /all-cheers.
+* Update all internal links/navigation references.
+* Update active nav state logic so /all-cheers highlights All Cheers.
+* Remove or replace any user-facing label that says All goals.
+* Do not change the underlying page functionality unless required by the route rename.
+
+Remove New Goal from navigation
+
+* Remove New Goal from the bottom navbar entirely.
+* Do not create an alternate nav item for it.
+* Do not add a floating action button.
+* The intended creation path is the CTA inside My Goals only.
+
+Acceptance criteria
+
+* Bottom navbar shows only: My Goals, My Cheers, All Cheers.
+* /all-cheers works and displays the same feed previously shown at /all-goals.
+* No visible nav item says New Goal.
+* No visible nav item says All goals.
+* The My Goals CTA remains the only obvious way to create a new goal.
+
+
+
 ---
 
 # Total Estimated Time

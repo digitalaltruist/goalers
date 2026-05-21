@@ -47,7 +47,7 @@
 			{#if form?.message}
 				<p class="form-error" role="alert">{form.message}</p>
 			{/if}
-			<button type="submit" class="btn btn-primary full-width">Log in</button>
+			<button type="submit" class="btn button-dark-surface-cta full-width">Log in</button>
 		</form>
 
 		<p class="footer-link">

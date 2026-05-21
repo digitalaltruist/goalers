@@ -138,6 +138,41 @@ svg {
 	border-color: var(--color-primary-hover);
 }
 
+/* Tactile arcade CTA for dark backgrounds (not light panels / sheets) */
+.btn.button-dark-surface-cta {
+	background: #c7ff1a;
+	color: #07100c;
+	border: 2px solid #83a912;
+	border-radius: 16px;
+	font-weight: 800;
+	box-shadow: 0 6px 0 #83a912;
+	transition:
+		transform 120ms ease,
+		box-shadow 120ms ease,
+		background 120ms ease,
+		color 120ms ease,
+		border-color 120ms ease;
+}
+
+.btn.button-dark-surface-cta:hover {
+	background: #b7f000;
+	color: #07100c;
+	border-color: #fff;
+	box-shadow: 0 6px 0 #fff;
+}
+
+.btn.button-dark-surface-cta:active {
+	transform: translateY(3px);
+	box-shadow: 0 3px 0 #fff;
+}
+
+.btn.button-dark-surface-cta.evidence-fab {
+	padding: 0;
+	width: 3.5rem;
+	height: 3.5rem;
+	border-radius: 50%;
+}
+
 .btn-secondary {
 	background: transparent;
 	color: var(--color-text);

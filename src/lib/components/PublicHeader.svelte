@@ -8,7 +8,7 @@
 		<AppLogo />
 		<nav aria-label="Main">
 			<a href={resolve('/login')}>Log in</a>
-			<a class="btn btn-primary btn-sm" href={resolve('/signup')}>Sign up</a>
+			<a class="btn button-dark-surface-cta btn-sm" href={resolve('/signup')}>Sign up</a>
 		</nav>
 	</div>
 </header>

@@ -61,7 +61,7 @@
 			{#if form?.message}
 				<p class="form-error" role="alert">{form.message}</p>
 			{/if}
-			<button type="submit" class="btn btn-primary full-width">Create account</button>
+			<button type="submit" class="btn button-dark-surface-cta full-width">Create account</button>
 		</form>
 
 		<p class="footer-link">

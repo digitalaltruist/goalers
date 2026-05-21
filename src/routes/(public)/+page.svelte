@@ -15,7 +15,7 @@
 			progress, build momentum, and stay consistent with encouragement from others.
 		</p>
 		<div class="cta-row">
-			<a class="btn btn-primary" href={resolve('/signup')}>Get started</a>
+			<a class="btn button-dark-surface-cta" href={resolve('/signup')}>Get started</a>
 			<a class="btn btn-secondary" href={resolve('/all-goals')}>Browse All Goals</a>
 		</div>
 	</div>
@@ -48,7 +48,7 @@
 			Track goals on My Goals, post evidence as you go, and see everyone's progress in All Goals —
 			a chronological view of evidence from the community.
 		</p>
-		<a class="btn btn-primary" href={resolve('/my-goals')}>View demo (My Goals)</a>
+		<a class="btn button-dark-surface-cta" href={resolve('/my-goals')}>View demo (My Goals)</a>
 	</div>
 </section>
 

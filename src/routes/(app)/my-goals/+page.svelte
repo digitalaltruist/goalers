@@ -20,7 +20,7 @@
 			cheer others and see your posts in the feed.
 		</p>
 	</div>
-	<a class="btn btn-primary" href={resolve('/goals/new')}>New goal</a>
+	<a class="btn button-dark-surface-cta" href={resolve('/goals/new')}>New goal</a>
 </header>
 
 <section class="goals-section" aria-labelledby="goals-heading">
@@ -31,7 +31,7 @@
 				No goals yet. Create a commitment, post photo evidence, then get cheered on in the All Goals
 				feed.
 			</p>
-			<a class="btn btn-primary" href={resolve('/goals/new')}>Create a goal</a>
+			<a class="btn button-dark-surface-cta" href={resolve('/goals/new')}>Create a goal</a>
 		</div>
 	{:else}
 		<div class="goals-grid">

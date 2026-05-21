@@ -60,5 +60,9 @@
 		.app-shell.sheet-open {
 			background: var(--color-bg);
 		}
+
+		.app-main.sheet-main {
+			padding-block: 0;
+		}
 	}
 </style>

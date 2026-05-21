@@ -34,7 +34,7 @@
 	</div>
 	<div class="actions">
 		<a class="btn btn-secondary" href={resolve('/my-goals')}>Cancel</a>
-		<button type="submit" class="btn btn-primary">Create goal</button>
+		<button type="submit" class="btn button-dark-surface-cta">Create goal</button>
 	</div>
 </form>
 
