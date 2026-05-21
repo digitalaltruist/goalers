@@ -116,7 +116,7 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.75rem 0;
-		border-bottom: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border-dark);
 	}
 
 	.sheet-back {
@@ -180,8 +180,8 @@
 		margin-top: 0.75rem;
 		border-radius: var(--radius-sm);
 		overflow: hidden;
-		border: 1px solid var(--color-border);
-		background: var(--color-surface-muted);
+		border: 1px solid var(--color-border-dark);
+		background: var(--color-surface-2);
 		aspect-ratio: 4 / 3;
 	}
 
@@ -199,8 +199,8 @@
 		gap: 0.75rem;
 		justify-content: flex-end;
 		padding: 0.75rem 0;
-		border-top: 1px solid var(--color-border);
-		background: var(--color-surface);
+		border-top: 1px solid var(--color-border-dark);
+		background: transparent;
 	}
 
 	.empty-state {
@@ -231,13 +231,52 @@
 			width: 100%;
 			max-height: min(90dvh, 100%);
 			z-index: 15;
-			background: var(--color-surface);
+			background: var(--color-card-light);
+			color: var(--color-text-dark);
 			border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 			box-shadow: var(--shadow-sheet);
 			overflow: hidden;
 			padding-inline: 1rem;
 			min-height: unset;
 			flex: unset;
+		}
+
+		.sheet-header {
+			border-bottom-color: var(--color-border-light);
+		}
+
+		.sheet-title {
+			color: var(--color-text-dark);
+		}
+
+		.sheet-subtitle {
+			color: var(--color-text-dark-muted);
+		}
+
+		.sheet-footer {
+			border-top-color: var(--color-border-light);
+			background: var(--color-card-light);
+		}
+
+		.create-form .form-field label {
+			color: var(--color-text-dark);
+		}
+
+		.create-form .form-field input,
+		.create-form .form-field textarea,
+		.create-form .form-field select {
+			background: #fff;
+			border-color: var(--color-border-light);
+			color: var(--color-text-dark);
+		}
+
+		.hint {
+			color: var(--color-text-dark-muted);
+		}
+
+		.photo-preview {
+			border-color: var(--color-border-light);
+			background: color-mix(in srgb, var(--color-text-dark) 4%, var(--color-card-light));
 		}
 
 		.sheet-scroll {

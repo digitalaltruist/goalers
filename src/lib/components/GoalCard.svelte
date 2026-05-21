@@ -28,7 +28,6 @@
 		flex-direction: column;
 		gap: 0.75rem;
 		border-left: 3px solid var(--color-primary);
-		box-shadow: var(--shadow-sm);
 	}
 
 	.goal-card-header {
@@ -45,11 +44,12 @@
 		flex: 1;
 		min-width: 0;
 		letter-spacing: -0.02em;
+		color: var(--color-text-dark);
 	}
 
 	.description {
 		font-size: 0.9375rem;
-		color: var(--color-text-muted);
+		color: var(--color-text-dark-muted);
 		line-height: 1.5;
 	}
 
@@ -60,13 +60,13 @@
 		justify-content: space-between;
 		gap: 0.5rem;
 		padding-top: 0.75rem;
-		border-top: 1px solid var(--color-border);
+		border-top: 1px solid var(--color-border-light);
 		margin-top: 0.25rem;
 	}
 
 	.meta {
 		font-size: 0.8125rem;
-		color: var(--color-text-muted);
+		color: var(--color-text-dark-muted);
 		font-weight: 500;
 	}
 </style>

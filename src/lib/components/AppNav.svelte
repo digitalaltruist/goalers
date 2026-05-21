@@ -110,9 +110,10 @@
 		position: sticky;
 		top: 0;
 		z-index: 10;
-		background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+		background: rgba(8, 13, 11, 0.92);
 		backdrop-filter: blur(8px);
-		border-bottom: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border-dark);
+		color: var(--color-text);
 	}
 
 	.inner {
@@ -148,13 +149,13 @@
 	}
 
 	.desktop-nav a:hover {
-		background: var(--color-surface-muted);
+		background: var(--color-surface-2);
 		color: var(--color-text);
 		text-decoration: none;
 	}
 
 	.desktop-nav a.active {
-		background: var(--color-primary-soft);
+		background: transparent;
 		color: var(--color-primary);
 	}
 
@@ -168,15 +169,16 @@
 		align-items: center;
 		gap: 0.375rem;
 		padding: 0.25rem 0.5rem 0.25rem 0.375rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border-dark);
 		border-radius: 999px;
 		cursor: pointer;
 		font-family: inherit;
+		color: var(--color-text);
 	}
 
 	.profile-trigger:hover {
-		background: var(--color-surface-muted);
+		background: var(--color-surface);
 	}
 
 	.profile-icon {
@@ -193,7 +195,7 @@
 		padding: 0 0.25rem;
 		border-radius: 50%;
 		background: var(--color-primary);
-		color: #f8faf8;
+		color: #07100c;
 		font-size: 0.6875rem;
 		font-weight: 700;
 		letter-spacing: -0.02em;
@@ -215,8 +217,8 @@
 		right: 0;
 		min-width: 10rem;
 		padding: 0.375rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border-dark);
 		border-radius: var(--radius-sm);
 		box-shadow: var(--shadow-md);
 		z-index: 20;
@@ -243,7 +245,7 @@
 	}
 
 	.menu-item:hover {
-		background: var(--color-surface-muted);
+		background: var(--color-surface);
 	}
 
 	.menu-username {
@@ -260,11 +262,11 @@
 		left: 0;
 		right: 0;
 		z-index: 10;
-		background: var(--color-surface);
-		border-top: 1px solid var(--color-border);
+		background: rgba(8, 13, 11, 0.96);
+		border-top: 1px solid var(--color-border-dark);
 		padding: 0.5rem;
 		padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-		box-shadow: 0 -2px 12px rgb(26 33 28 / 0.06);
+		box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.28);
 	}
 
 	.mobile-nav a {
@@ -279,7 +281,7 @@
 	}
 
 	.mobile-nav a.active {
-		background: var(--color-primary-soft);
+		background: transparent;
 		color: var(--color-primary);
 	}
 

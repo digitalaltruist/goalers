@@ -17,10 +17,10 @@
 		place-items: center;
 		border-radius: 50%;
 		background: var(--color-primary);
-		color: #f8faf8;
+		color: #07100c;
 		box-shadow: var(--shadow-md);
 		text-decoration: none;
-		border: 2px solid color-mix(in srgb, #f8faf8 20%, transparent);
+		border: 2px solid color-mix(in srgb, #07100c 20%, transparent);
 		transition:
 			transform 0.15s,
 			background 0.15s;

@@ -66,15 +66,16 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.06em;
-		color: var(--color-accent);
+		color: var(--color-orange);
 		margin-bottom: 0.75rem;
 	}
 
 	h1 {
+		font-family: var(--font-display);
 		font-size: clamp(2rem, 5vw, 2.75rem);
-		font-weight: 800;
+		font-weight: 400;
 		line-height: 1.15;
-		letter-spacing: -0.03em;
+		letter-spacing: 0.02em;
 	}
 
 	.lead {
@@ -93,8 +94,8 @@
 
 	.features {
 		padding: 2rem 0 4rem;
-		background: var(--color-surface-muted);
-		border-block: 1px solid var(--color-border);
+		background: var(--color-surface);
+		border-block: 1px solid var(--color-border-dark);
 	}
 
 	.features-grid {

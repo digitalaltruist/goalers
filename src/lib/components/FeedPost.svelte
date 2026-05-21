@@ -157,30 +157,31 @@
 	.author {
 		font-weight: 600;
 		font-size: 0.9375rem;
+		color: var(--color-text-dark);
 	}
 
 	.username {
 		font-size: 0.8125rem;
-		color: var(--color-text-muted);
+		color: var(--color-text-dark-muted);
 	}
 
 	time {
 		font-size: 0.8125rem;
-		color: var(--color-text-muted);
+		color: var(--color-text-dark-muted);
 		flex-shrink: 0;
 	}
 
 	.goal-ref {
 		font-size: 0.8125rem;
-		color: var(--color-text-muted);
+		color: var(--color-text-dark-muted);
 	}
 
 	.photo-frame {
 		margin: 0;
 		border-radius: var(--radius-sm);
 		overflow: hidden;
-		border: 1px solid var(--color-border);
-		background: var(--color-surface-muted);
+		border: 1px solid var(--color-border-light);
+		background: color-mix(in srgb, var(--color-text-dark) 4%, var(--color-card-light));
 		aspect-ratio: 4 / 3;
 	}
 
@@ -200,7 +201,7 @@
 		width: 100%;
 		height: 100%;
 		min-height: 8rem;
-		color: var(--color-text-muted);
+		color: var(--color-text-dark-muted);
 		font-size: 0.875rem;
 	}
 
@@ -211,6 +212,7 @@
 	.content {
 		font-size: 0.9375rem;
 		line-height: 1.55;
+		color: var(--color-text-dark);
 	}
 
 	footer {
@@ -219,7 +221,7 @@
 		justify-content: space-between;
 		gap: 0.5rem;
 		padding-top: 0.5rem;
-		border-top: 1px solid var(--color-border);
+		border-top: 1px solid var(--color-border-light);
 		margin-top: 0.125rem;
 	}
 
@@ -236,10 +238,10 @@
 		font-size: 0.875rem;
 		font-weight: 600;
 		font-family: inherit;
-		border: 1px solid var(--color-border);
+		border: 1px solid var(--color-border-light);
 		border-radius: 999px;
-		background: var(--color-surface);
-		color: var(--color-text-muted);
+		background: var(--color-card-light);
+		color: var(--color-text-dark-muted);
 		cursor: pointer;
 		transition:
 			background 0.15s ease,
@@ -248,14 +250,14 @@
 	}
 
 	.cheer-btn:hover:not(:disabled) {
-		background: var(--color-surface-muted);
-		color: var(--color-text);
+		background: color-mix(in srgb, var(--color-text-dark) 4%, var(--color-card-light));
+		color: var(--color-text-dark);
 	}
 
 	.cheer-btn.cheered {
-		background: var(--color-success-soft);
-		border-color: var(--color-success);
-		color: var(--color-success);
+		background: color-mix(in srgb, var(--color-orange) 14%, var(--color-card-light));
+		border-color: var(--color-orange);
+		color: var(--color-orange);
 	}
 
 	.cheer-btn:disabled {
@@ -280,7 +282,7 @@
 		border: none;
 		border-radius: var(--radius-sm);
 		background: transparent;
-		color: var(--color-text-muted);
+		color: var(--color-text-dark-muted);
 		cursor: pointer;
 		opacity: 0.55;
 		flex-shrink: 0;
@@ -291,7 +293,7 @@
 
 	.flag-btn:hover:not(:disabled) {
 		opacity: 0.85;
-		color: var(--color-text);
+		color: var(--color-orange);
 	}
 
 	.flag-btn.flagged,

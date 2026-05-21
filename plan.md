@@ -688,7 +688,7 @@ Estimated Time:
 Goal:
 Improve quality, presentation, and reliability for final presentation/demo.
 
-Tasks:
+Task Examples (detailed instructions will following in subsections):
 
 - typography pass
 - spacing/layout refinement
@@ -716,6 +716,233 @@ Success Criteria:
 
 Estimated Time:
 ~2 hours
+
+
+
+## **5.1 Final visual pass: night-mode athletic style**
+
+Implement a CSS-only visual refresh. Do **not** change app logic, routes, database code, auth behavior, or component structure unless absolutely necessary for class/style cleanup.
+
+### **Visual direction**
+
+Goalers should feel like:
+
+modern night-mode social accountability with fun, naive athletic energy
+
+References:
+
+- Nike Run Club energy
+- amateur athletics
+- bold social momentum
+- bright highlight colors on a dark base
+
+Avoid:
+
+- elegant wellness minimalism
+- Apple Fitness polish
+- betting app/casino styling
+- generic Tailwind SaaS
+- football-specific theming
+
+### **Typography**
+
+Use two typefaces:
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700;800&display=swap');
+```
+
+Use:
+
+```css
+--font-display: 'Bungee', system-ui, sans-serif;
+--font-ui: 'Inter', system-ui, sans-serif;
+```
+
+Rules:
+
+- Use **Bungee** only for:
+  - Goalers wordmark
+  - landing page hero headline
+  - major page titles like “All Goals”
+  - small athletic labels if appropriate
+- Use **Inter** for everything else:
+  - body copy
+  - cards
+  - buttons
+  - navigation
+  - feed content
+  - forms
+
+### **Color tokens**
+
+Add or update global CSS variables:
+
+```css
+:root {
+  --color-bg: #080D0B;
+  --color-surface: #101815;
+  --color-surface-2: #16221D;
+  --color-card-light: #FFFDF4;
+
+  --color-text: #F7F7EE;
+  --color-text-muted: #B8C2BA;
+  --color-text-dark: #111A17;
+  --color-text-dark-muted: #4D5A54;
+
+  --color-primary: #C7FF1A;
+  --color-primary-hover: #B7F000;
+
+  --color-green: #2F5B49;
+  --color-orange: #FF6B1A;
+  --color-purple: #9B5CFF;
+  --color-blue: #2F8CFF;
+  --color-yellow: #FFD447;
+
+  --color-border-dark: rgba(255, 255, 255, 0.12);
+  --color-border-light: rgba(17, 26, 23, 0.14);
+
+  --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+```
+
+### **Page background**
+
+Set the main app background to night mode:
+
+```css
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+}
+```
+
+Optional but preferred:
+
+```css
+body {
+  background:
+    radial-gradient(circle at top right, rgba(199, 255, 26, 0.10), transparent 28rem),
+    linear-gradient(180deg, #080D0B 0%, #0D1411 100%);
+}
+```
+
+### **Inverted cards rule**
+
+Goal cards and evidence/proof cards are the big exception.
+
+They should stay light:
+
+```css
+.goal-card,
+.evidence-card,
+.proof-card {
+  background: var(--color-card-light);
+  color: var(--color-text-dark);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-card);
+}
+```
+
+Text inside these cards should use dark tokens:
+
+```css
+.goal-card p,
+.evidence-card p,
+.proof-card p {
+  color: var(--color-text-dark-muted);
+}
+```
+
+### **Buttons**
+
+Primary CTA:
+
+```css
+.button-primary {
+  background: var(--color-primary);
+  color: #07100C;
+  border: 1px solid var(--color-primary);
+  font-weight: 800;
+}
+```
+
+Secondary CTA:
+
+```css
+.button-secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid rgba(199, 255, 26, 0.55);
+}
+```
+
+### **Highlights**
+
+Use bright colors sparingly:
+
+- primary actions: `#C7FF1A`
+- momentum/fire: `#FF6B1A`
+- community: `#9B5CFF`
+- encouragement/megaphone: `#2F8CFF`
+- warnings/flag: `#FF6B1A`
+
+Do not use gradients on buttons.
+
+### **Header and bottom nav**
+
+Header:
+
+```css
+.app-header {
+  background: rgba(8, 13, 11, 0.92);
+  border-bottom: 1px solid var(--color-border-dark);
+  color: var(--color-text);
+}
+```
+
+Bottom nav:
+
+```css
+.bottom-nav {
+  background: rgba(8, 13, 11, 0.96);
+  border-top: 1px solid var(--color-border-dark);
+}
+```
+
+Active nav state:
+
+```css
+.bottom-nav .active {
+  color: var(--color-primary);
+}
+```
+
+### **Logo / wordmark**
+
+Use Bungee for the wordmark:
+
+```css
+.wordmark {
+  font-family: var(--font-display);
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+```
+
+Keep the existing “G” app icon, but switch it to:
+
+```css
+.logo-mark {
+  background: var(--color-primary);
+  color: #07100C;
+}
+```
+
+### **Final constraint**
+
+Keep the implementation CSS-focused and low-risk. Do not redesign flows. Do not add new features. Do not introduce animation libraries.
 
 ---
 

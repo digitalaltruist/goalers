@@ -1,28 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-	/* Pitch & stadium palette */
-	--color-bg: #f2f4f0;
-	--color-surface: #fafbf9;
-	--color-surface-muted: #e6ebe3;
-	--color-stadium: #1a211c;
-	--color-border: #c5cdc4;
-	--color-border-strong: #9aa89e;
-	--color-text: #1a211c;
-	--color-text-muted: #4d5852;
-	--color-primary: #2f4f42;
-	--color-primary-hover: #243f35;
-	--color-primary-soft: #dce6df;
-	--color-accent: #a67c2e;
-	--color-accent-hover: #8a6624;
-	--color-accent-soft: #f0e6d0;
-	--color-success: #3d6b52;
-	--color-success-soft: #d8e8de;
-	--font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	/* Night-mode athletic palette */
+	--color-bg: #080d0b;
+	--color-surface: #101815;
+	--color-surface-2: #16221d;
+	--color-surface-muted: #16221d;
+	--color-card-light: #fffdf4;
+	--color-stadium: #080d0b;
+
+	--color-text: #f7f7ee;
+	--color-text-muted: #b8c2ba;
+	--color-text-dark: #111a17;
+	--color-text-dark-muted: #4d5a54;
+
+	--color-primary: #c7ff1a;
+	--color-primary-hover: #b7f000;
+	--color-primary-soft: color-mix(in srgb, var(--color-primary) 18%, transparent);
+
+	--color-green: #2f5b49;
+	--color-orange: #ff6b1a;
+	--color-purple: #9b5cff;
+	--color-blue: #2f8cff;
+	--color-yellow: #ffd447;
+
+	--color-accent: var(--color-orange);
+	--color-accent-hover: #e55a0f;
+	--color-accent-soft: color-mix(in srgb, var(--color-orange) 20%, transparent);
+
+	--color-success: var(--color-green);
+	--color-success-soft: color-mix(in srgb, var(--color-green) 22%, var(--color-card-light));
+
+	--color-border-dark: rgba(255, 255, 255, 0.12);
+	--color-border-light: rgba(17, 26, 23, 0.14);
+	--color-border: var(--color-border-dark);
+	--color-border-strong: rgba(255, 255, 255, 0.22);
+
+	--font-display: 'Bungee', system-ui, sans-serif;
+	--font-ui: 'Inter', system-ui, sans-serif;
+	--font-sans: var(--font-ui);
+
 	--radius-sm: 8px;
 	--radius-md: 12px;
 	--radius-lg: 20px;
-	--shadow-sm: 0 1px 2px rgb(26 33 28 / 0.06);
-	--shadow-md: 0 4px 16px rgb(26 33 28 / 0.1);
-	--shadow-sheet: 0 -8px 32px rgb(26 33 28 / 0.14);
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.28);
+	--shadow-card: 0 18px 40px rgba(0, 0, 0, 0.28);
+	--shadow-sheet: 0 -8px 32px rgba(0, 0, 0, 0.35);
 	--max-width: 1100px;
 	--nav-height: 56px;
 }
@@ -34,7 +58,7 @@
 }
 
 html {
-	font-family: var(--font-sans);
+	font-family: var(--font-ui);
 	color: var(--color-text);
 	background: var(--color-bg);
 	line-height: 1.5;
@@ -44,6 +68,11 @@ html {
 body {
 	margin: 0;
 	min-height: 100dvh;
+	background:
+		radial-gradient(circle at top right, rgba(199, 255, 26, 0.1), transparent 28rem),
+		linear-gradient(180deg, #080d0b 0%, #0d1411 100%);
+	color: var(--color-text);
+	font-family: var(--font-ui);
 }
 
 h1,
@@ -98,23 +127,26 @@ svg {
 
 .btn-primary {
 	background: var(--color-primary);
-	color: #f8faf8;
+	color: #07100c;
+	border: 1px solid var(--color-primary);
+	font-weight: 800;
 	box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
 	background: var(--color-primary-hover);
+	border-color: var(--color-primary-hover);
 }
 
 .btn-secondary {
-	background: var(--color-surface);
+	background: transparent;
 	color: var(--color-text);
-	border: 1px solid var(--color-border);
+	border: 1px solid rgba(199, 255, 26, 0.55);
 }
 
 .btn-secondary:hover {
-	background: var(--color-surface-muted);
-	border-color: var(--color-border-strong);
+	background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+	border-color: rgba(199, 255, 26, 0.75);
 }
 
 .btn-ghost {
@@ -124,7 +156,7 @@ svg {
 }
 
 .btn-ghost:hover {
-	background: var(--color-surface-muted);
+	background: var(--color-surface-2);
 	color: var(--color-text);
 }
 
@@ -135,9 +167,57 @@ svg {
 
 .card {
 	background: var(--color-surface);
-	border: 1px solid var(--color-border);
+	border: 1px solid var(--color-border-dark);
 	border-radius: var(--radius-md);
 	box-shadow: var(--shadow-sm);
+}
+
+/* Inverted light cards (goals + evidence feed) */
+.goal-card,
+.feed-post,
+.evidence-card,
+.proof-card {
+	background: var(--color-card-light);
+	color: var(--color-text-dark);
+	border: 1px solid var(--color-border-light);
+	box-shadow: var(--shadow-card);
+}
+
+.goal-card h3,
+.feed-post h3,
+.evidence-card h3,
+.proof-card h3 {
+	color: var(--color-text-dark);
+}
+
+.goal-card p,
+.goal-card .description,
+.goal-card .meta,
+.feed-post p,
+.feed-post .description,
+.feed-post .meta,
+.feed-post .username,
+.feed-post time,
+.feed-post .goal-ref,
+.feed-post .content,
+.evidence-card p,
+.proof-card p {
+	color: var(--color-text-dark-muted);
+}
+
+.goal-card .badge-accent {
+	background: color-mix(in srgb, var(--color-green) 18%, var(--color-card-light));
+	color: var(--color-green);
+	border-color: transparent;
+}
+
+.goal-card .btn-ghost {
+	color: var(--color-text-dark-muted);
+}
+
+.goal-card .btn-ghost:hover {
+	background: color-mix(in srgb, var(--color-text-dark) 6%, var(--color-card-light));
+	color: var(--color-text-dark);
 }
 
 .badge {
@@ -148,9 +228,9 @@ svg {
 	font-size: 0.75rem;
 	font-weight: 600;
 	border-radius: 999px;
-	background: var(--color-surface-muted);
+	background: var(--color-surface-2);
 	color: var(--color-text-muted);
-	border: 1px solid var(--color-border);
+	border: 1px solid var(--color-border-dark);
 }
 
 .badge-accent {
@@ -177,9 +257,9 @@ svg {
 	padding: 0.625rem 0.75rem;
 	font-size: 1rem;
 	font-family: inherit;
-	border: 1px solid var(--color-border);
+	border: 1px solid var(--color-border-dark);
 	border-radius: var(--radius-sm);
-	background: var(--color-surface);
+	background: var(--color-surface-2);
 	color: var(--color-text);
 }
 
@@ -201,9 +281,10 @@ svg {
 }
 
 .page-header h1 {
+	font-family: var(--font-display);
 	font-size: clamp(1.5rem, 4vw, 1.875rem);
-	font-weight: 700;
-	letter-spacing: -0.02em;
+	font-weight: 400;
+	letter-spacing: 0.02em;
 }
 
 .page-header p {
@@ -214,17 +295,22 @@ svg {
 
 .placeholder-banner {
 	padding: 0.75rem 1rem;
-	background: var(--color-primary-soft);
-	border: 1px solid var(--color-border);
+	background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-2));
+	border: 1px solid var(--color-border-dark);
 	border-radius: var(--radius-sm);
 	font-size: 0.875rem;
 	color: var(--color-primary);
 	margin-bottom: 1.5rem;
 }
 
+.logo-text {
+	font-family: var(--font-display);
+	letter-spacing: 0.02em;
+}
+
 /* Evidence sheet (mobile) */
 .app-shell.sheet-open {
-	background: var(--color-stadium);
+	background: var(--color-bg);
 }
 
 @media (max-width: 767px) {

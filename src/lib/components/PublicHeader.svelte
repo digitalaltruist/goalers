@@ -18,9 +18,10 @@
 		position: sticky;
 		top: 0;
 		z-index: 10;
-		background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+		background: rgba(8, 13, 11, 0.92);
 		backdrop-filter: blur(8px);
-		border-bottom: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border-dark);
+		color: var(--color-text);
 	}
 
 	.inner {

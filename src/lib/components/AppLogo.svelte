@@ -18,15 +18,18 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-weight: 700;
 		font-size: 1.125rem;
 		color: var(--color-text);
 		text-decoration: none;
-		letter-spacing: -0.02em;
 	}
 
 	.logo:hover {
 		text-decoration: none;
+	}
+
+	.logo-text {
+		font-family: var(--font-display);
+		letter-spacing: 0.02em;
 	}
 
 	.logo-mark {
@@ -36,7 +39,8 @@
 		height: 2rem;
 		border-radius: var(--radius-sm);
 		background: var(--color-primary);
-		color: #f8faf8;
+		color: #07100c;
 		font-size: 1rem;
+		font-weight: 700;
 	}
 </style>
