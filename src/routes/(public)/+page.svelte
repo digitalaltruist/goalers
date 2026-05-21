@@ -31,7 +31,7 @@
 			</p>
 			<div class="cta-row">
 				<a class="btn button-dark-surface-cta" href={resolve('/signup')}>Start a goal</a>
-				<a class="btn btn-secondary" href={resolve('/all-cheers')}>Browse All Cheers</a>
+				<a class="btn button-dark-surface-cta-secondary" href={resolve('/all-cheers')}>Browse All Cheers</a>
 			</div>
 		</div>
 	</div>

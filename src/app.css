@@ -18,6 +18,15 @@
 	--color-primary-hover: #b7f000;
 	--color-primary-soft: color-mix(in srgb, var(--color-primary) 18%, transparent);
 
+	/* Secondary tactile CTA on dark surfaces (paired with button-dark-surface-cta) */
+	--color-cta-secondary-bg: #0a0f0c;
+	--color-cta-secondary-bg-hover: #141a10;
+	--color-cta-secondary-text: #d7ff64;
+	--color-cta-secondary-text-hover: #e8ff85;
+	--color-cta-secondary-border: #7ea000;
+	--color-cta-secondary-border-hover: #8fb800;
+	--color-cta-secondary-shadow: #5a7200;
+
 	--color-green: #2f5b49;
 	--color-orange: #ff6b1a;
 	--color-purple: #9b5cff;
@@ -171,6 +180,35 @@ svg {
 	padding: 0.75rem 1.125rem;
 	min-height: 3.5rem;
 	border-radius: 9999px;
+}
+
+/* Secondary tactile CTA on dark surfaces — same physicality as primary, lower emphasis */
+.btn.button-dark-surface-cta-secondary {
+	background: color-mix(in srgb, var(--color-primary) 6%, var(--color-cta-secondary-bg));
+	color: var(--color-cta-secondary-text);
+	border: 2px solid var(--color-cta-secondary-border);
+	border-radius: 16px;
+	font-weight: 800;
+	box-shadow: 0 6px 0 color-mix(in srgb, var(--color-cta-secondary-shadow) 55%, transparent);
+	transition:
+		transform 120ms ease,
+		box-shadow 120ms ease,
+		background 120ms ease,
+		color 120ms ease,
+		border-color 120ms ease;
+}
+
+.btn.button-dark-surface-cta-secondary:hover {
+	background: color-mix(in srgb, var(--color-primary) 10%, var(--color-cta-secondary-bg-hover));
+	color: var(--color-cta-secondary-text-hover);
+	border-color: var(--color-cta-secondary-border-hover);
+	box-shadow: 0 6px 0 var(--color-cta-secondary-shadow);
+}
+
+.btn.button-dark-surface-cta-secondary:active {
+	transform: translateY(3px);
+	box-shadow: 0 3px 0 var(--color-cta-secondary-shadow);
+	border-color: var(--color-cta-secondary-border);
 }
 
 .btn-secondary {
