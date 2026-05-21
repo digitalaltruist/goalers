@@ -7,6 +7,7 @@
 	href={resolve('/evidence/new')}
 	aria-label="Post progress"
 >
+	<span class="fab-label" aria-hidden="true">Progress</span>
 	<span class="fab-icon" aria-hidden="true">+</span>
 </a>
 
@@ -15,15 +16,22 @@
 		position: fixed;
 		z-index: 25;
 		right: 1rem;
-		display: grid;
-		place-items: center;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+	}
+
+	.fab-label {
+		font-size: 0.9375rem;
+		font-weight: 800;
+		line-height: 1;
 	}
 
 	.fab-icon {
-		font-size: 1.75rem;
+		font-size: 1.25rem;
 		font-weight: 800;
 		line-height: 1;
-		margin-top: -2px;
+		margin-top: -1px;
 	}
 
 	@media (max-width: 767px) {
